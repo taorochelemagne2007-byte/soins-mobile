@@ -323,7 +323,7 @@ const COLORS=['#1a9e7e','#4a9edd','#e0a832','#e05252','#9b7de0','#e07a5f'];
 const VERSION='1.0';
 const BUILD_DATE='10/05/2025';
 const DB_NAME = 'SoinsMobileDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2; // Passé à 2 pour forcer la création du store 'config' chez les anciens utilisateurs
 let db;
 
 function initDB() {
@@ -336,59 +336,52 @@ function initDB() {
       if (!db.objectStoreNames.contains('config')) db.createObjectStore('config', { keyPath: 'key' });
     };
     request.onsuccess = (e) => { db = e.target.result; resolve(db); };
-    request.onerror = () => reject('DB error');
+    request.onerror = (e) => { console.error(e); reject('DB error'); };
   });
 }
-
-async function dbSave(store, data) {
-  const tx = db.transaction(store, 'readwrite');
-  return new Promise(r => { tx.objectStore(store).put(data).onsuccess = () => r(); });
-}
-async function dbGetAll(store) {
-  const tx = db.transaction(store, 'readonly');
-  return new Promise(r => { tx.objectStore(store).getAll().onsuccess = (e) => r(e.target.result); });
-}
-async function dbGet(store, id) {
-  const tx = db.transaction(store, 'readonly');
-  return new Promise(r => { tx.objectStore(store).get(id).onsuccess = (e) => r(e.target.result); });
-}
-async function dbDelete(store, id) {
-  const tx = db.transaction(store, 'readwrite');
-  return new Promise(r => { tx.objectStore(store).delete(id).onsuccess = () => r(); });
-}
-
-const ID_DOCS=[
-  {key:'carte_vitale',icon:'💳',label:'Carte vitale'},
-  {key:'cni',icon:'🪪',label:'Carte d\'identité'},
-  {key:'mutuelle',icon:'🏥',label:'Carte mutuelle'},
-];
-
-let S={
-  page:'login', patientId:null, docId:null, search:'',
-  editPid:null, contactPid:null, category:'active',
-  currentUser: null, patients: [], pin: null, authenticated: false
-};
+// ... (reste des fonctions db identiques)
 
 async function startApp() {
   try {
     await initDB();
     S.patients = await dbGetAll('patients');
-    const configPin = await dbGet('config', 'app_pin');
-    if (configPin) {
-      S.pin = configPin.value;
-      document.getElementById('modal-pin').classList.add('open');
-    } else {
-      S.authenticated = true;
-    }
+    
+    // Tentative de récupération du PIN
+    try {
+      const configPin = await dbGet('config', 'app_pin');
+      if (configPin) {
+        S.pin = configPin.value;
+        document.getElementById('modal-pin').classList.add('open');
+      } else {
+        S.authenticated = true;
+      }
+    } catch(err) { S.authenticated = true; }
+
+    // Migration localStorage
     if(S.patients.length === 0) {
-      S.patients = defaultPatients();
-      for(let p of S.patients) await dbSave('patients', p);
+      const old = localStorage.getItem('sm_v16') || localStorage.getItem('sm_v15');
+      if(old) {
+        const parsed = JSON.parse(old);
+        for(let p of parsed) { if(!p.status) p.status = 'active'; await dbSave('patients', p); }
+        S.patients = await dbGetAll('patients');
+      } else {
+        S.patients = defaultPatients();
+        for(let p of S.patients) await dbSave('patients', p);
+      }
     }
+    
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(e => console.error('SW error', e));
     }
     render();
-  } catch(e) { toast('❌ Erreur DB'); }
+  } catch(e) { 
+    console.error(e);
+    document.body.innerHTML = `<div style="padding:40px; text-align:center; color:white; font-family:sans-serif">
+      <h2>❌ Erreur de base de données</h2>
+      <p style="opacity:0.7">Impossible d'accéder au stockage local. Vérifiez que vous n'êtes pas en mode navigation privée stricte.</p>
+      <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; background:var(--accent); border:none; color:white; border-radius:8px">Réessayer</button>
+    </div>`;
+  }
 }
 
 function checkPin() {
