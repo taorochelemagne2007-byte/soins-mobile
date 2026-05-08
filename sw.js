@@ -1,4 +1,4 @@
-const CACHE_NAME = 'soins-mobile-v5';
+const CACHE_NAME = 'soins-mobile-v1-final-v1';
 const ASSETS = [
   './index.html',
   './manifest.json',
@@ -20,7 +20,7 @@ self.addEventListener('activate', (e) => {
       return Promise.all(
         keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
