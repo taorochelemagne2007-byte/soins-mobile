@@ -23,11 +23,8 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font)}
 #app{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-
-/* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));background:var(--bg2);border-bottom:1px solid var(--border);min-height:60px;flex-shrink:0;z-index:10;gap:8px}
 .topbar-back{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border-radius:10px;cursor:pointer;font-size:18px;flex-shrink:0}
-.topbar-back:active{background:var(--accent-dim)}
 .topbar-center{flex:1;text-align:center;min-width:0}
 .topbar-title{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .topbar-sub{font-size:11px;color:var(--text2);margin-top:1px}
@@ -35,34 +32,19 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .tbtn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;font-size:16px;border:none;font-family:var(--font)}
 .tbtn.accent{background:var(--accent)}
 .tbtn.ghost{background:var(--bg3);color:var(--text2)}
-.tbtn:active{opacity:0.7}
-.topbar-placeholder{width:36px;flex-shrink:0}
-
-/* CONTENT */
 .content{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch}
 .content::-webkit-scrollbar{display:none}
-
-/* SEARCH */
 .search-wrap{position:relative;margin-bottom:14px}
 .search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);pointer-events:none}
 .search-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:15px;padding:11px 11px 11px 38px;outline:none}
-.search-input::placeholder{color:var(--text3)}
-.search-input:focus{border-color:var(--accent)}
-
-/* STATS */
 .stats-bar{display:flex;gap:8px;margin-bottom:14px}
 .stat-chip{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 10px;text-align:center}
 .stat-chip .val{font-size:20px;font-weight:600;color:var(--accent2);font-family:var(--mono)}
 .stat-chip .lbl{font-size:10px;color:var(--text2);margin-top:1px}
-
 .section-label{font-size:10px;font-weight:600;letter-spacing:0.08em;color:var(--text3);text-transform:uppercase;margin-bottom:8px}
-
-/* PATIENT LIST */
 .patient-list{display:flex;flex-direction:column;gap:7px}
 .couple-group{display:flex;flex-direction:column;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(212,94,173,0.3);background:rgba(212,94,173,0.03)}
 .couple-label{padding:6px 14px;font-size:10px;font-weight:600;color:var(--pink);letter-spacing:0.06em;text-transform:uppercase;border-bottom:1px solid rgba(212,94,173,0.12)}
-.couple-group .patient-card{border-radius:0;border:none;border-bottom:1px solid rgba(255,255,255,0.04)}
-.couple-group .patient-card:last-child{border-bottom:none}
 .patient-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform 0.1s;position:relative;overflow:hidden}
 .patient-card:active{transform:scale(0.985)}
 .patient-card.urgent::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red)}
@@ -74,8 +56,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .badge{font-size:10px;padding:3px 7px;border-radius:20px;font-weight:500;white-space:nowrap}
 .badge-ok{background:rgba(26,158,126,0.15);color:var(--accent2)}
 .badge-alert{background:rgba(224,82,82,0.15);color:var(--red)}
-
-/* DOSSIER */
 .patient-header{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px}
 .ph-top{display:flex;align-items:flex-start;gap:12px}
 .patient-avatar-lg{width:56px;height:56px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;flex-shrink:0}
@@ -84,39 +64,27 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .patient-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
 .tag{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid var(--border);color:var(--text2)}
 .tag.couple{border-color:rgba(212,94,173,0.4);color:var(--pink);background:rgba(212,94,173,0.08)}
-
-/* VU BUTTON */
 .vu-bar{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);align-items:center}
 .vu-btn{flex:1;padding:11px;border-radius:10px;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:7px}
 .vu-btn.not-seen{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
 .vu-btn.is-seen{background:rgba(26,158,126,0.15);color:var(--accent2);border:1px solid rgba(26,158,126,0.3)}
-.vu-btn:active{opacity:0.7;transform:scale(0.98)}
 .header-actions{display:flex;gap:7px;margin-top:10px}
 .btn-sm{padding:7px 12px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:var(--font)}
-.btn-sm:active{opacity:0.7}
 .btn-sm.danger{border-color:rgba(224,82,82,0.3);color:var(--red);background:rgba(224,82,82,0.08)}
 .btn-sm.primary{border-color:var(--accent);color:var(--accent2);background:var(--accent-dim)}
-
-/* DOCS */
 .docs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
 .doc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;cursor:pointer;transition:transform 0.1s;display:flex;flex-direction:column;gap:5px}
-.doc-card:active{transform:scale(0.97)}
 .doc-card.add-doc{border-style:dashed;align-items:center;justify-content:center;min-height:84px;gap:4px}
 .doc-icon{font-size:20px}
 .doc-name{font-size:12px;font-weight:500}
 .doc-datetime{font-size:10px;color:var(--text3);font-family:var(--mono);line-height:1.5}
-
-/* ID DOCS */
 .id-docs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.id-doc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;min-height:90px;justify-content:center;transition:transform 0.1s}
-.id-doc-card:active{transform:scale(0.97)}
+.id-doc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;min-height:90px;justify-content:center;transition:transform 0.1s;position:relative;overflow:hidden}
 .id-doc-card.has-photo{border-color:rgba(26,158,126,0.3);background:rgba(26,158,126,0.04)}
-.id-doc-card .id-icon{font-size:26px}
-.id-doc-card .id-label{font-size:12px;font-weight:500;color:var(--text)}
-.id-doc-card .id-status{font-size:10px;color:var(--text3)}
+.id-doc-card .id-icon{font-size:26px;position:relative;z-index:1}
+.id-doc-card .id-label{font-size:12px;font-weight:500;color:var(--text);position:relative;z-index:1}
+.id-doc-card .id-status{font-size:10px;color:var(--text3);position:relative;z-index:1}
 .id-doc-card.has-photo .id-status{color:var(--accent2)}
-
-/* CONTACTS */
 .contact-list{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
 .contact-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px}
 .contact-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
@@ -124,12 +92,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .contact-role{font-size:11px;color:var(--text3);margin-top:1px}
 .contact-actions{display:flex;gap:5px;flex-wrap:wrap}
 .contact-btn{display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:var(--font);text-decoration:none;white-space:nowrap}
-.contact-btn:active{opacity:0.7}
 .contact-btn.tel{border-color:rgba(26,158,126,0.3);color:var(--accent2);background:rgba(26,158,126,0.07)}
 .contact-btn.mail{border-color:rgba(74,158,221,0.3);color:var(--blue);background:rgba(74,158,221,0.07)}
 .add-contact-btn{width:100%;padding:11px;background:transparent;border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--font)}
-
-/* FORMULAIRES */
 .form-header{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px}
 .form-title{font-size:15px;font-weight:600}
 .form-patient{font-size:12px;color:var(--accent2);margin-top:3px}
@@ -137,67 +102,36 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .form-section-title{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
 .field-group{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
 .field-row{display:flex;align-items:center;padding:11px 14px;gap:10px;border-bottom:1px solid var(--border)}
-.field-row:last-child{border-bottom:none}
 .field-label{font-size:13px;color:var(--text2);flex:1}
 .field-input{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:14px;text-align:right;width:100px}
-.field-unit{font-size:11px;color:var(--text3);white-space:nowrap}
 .field-textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:14px;padding:12px;outline:none;resize:none;min-height:90px;line-height:1.6}
-.field-textarea:focus{border-color:var(--accent)}
-
-/* TABLEAU MESURES */
-.measure-table{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;width:100%}
-.measure-table{border-collapse:collapse;display:block;overflow-x:auto}
+.measure-table{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;width:100%;border-collapse:collapse;display:block;overflow-x:auto}
 .mt-head,.mt-row{display:grid;border-bottom:1px solid var(--border)}
-.mt-row:last-child{border-bottom:none}
 .mt-cell{padding:8px 6px;font-size:11px;border-right:1px solid var(--border);display:flex;align-items:center;justify-content:center}
-.mt-cell:last-child{border-right:none}
 .mt-cell.hdr{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;background:var(--bg3)}
 .mt-cell input{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:12px;width:100%;text-align:center;min-width:0}
 .mt-cell .dt-display{font-size:10px;color:var(--text3);font-family:var(--mono);text-align:center;line-height:1.4;white-space:nowrap}
-
-/* tension: date | heure | sys | dia | pouls */
 .mt-tension{grid-template-columns:72px 56px 52px 52px 52px}
-/* glycemie: date | heure | avant | après */
 .mt-glyc{grid-template-columns:72px 56px 1fr 1fr}
-
 .photo-zone{background:var(--card);border:2px dashed var(--border);border-radius:var(--radius-sm);padding:26px;text-align:center;cursor:pointer}
-.photo-zone:active{border-color:var(--accent)}
 .photo-zone-icon{font-size:30px;margin-bottom:7px}
 .photo-zone-text{font-size:13px;color:var(--text2)}
-.photo-zone-sub{font-size:11px;color:var(--text3);margin-top:3px}
-
 .save-btn{width:100%;padding:15px;background:var(--accent);border:none;border-radius:var(--radius-sm);color:white;font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-top:6px;margin-bottom:28px}
-.save-btn:active{opacity:0.8}
-.save-btn.ghost{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
-
 .modele-grid{display:flex;flex-direction:column;gap:8px}
 .modele-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform 0.1s}
-.modele-item:active{transform:scale(0.98)}
 .modele-icon{font-size:24px;width:38px;text-align:center;flex-shrink:0}
 .modele-info h3{font-size:14px;font-weight:600}
 .modele-info p{font-size:11px;color:var(--text2);margin-top:2px}
 .modele-arrow{color:var(--text3);font-size:17px;margin-left:auto}
-
-/* EXPORT/IMPORT */
 .data-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px}
 .data-panel h3{font-size:14px;font-weight:600;margin-bottom:4px}
 .data-panel p{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px}
-.data-panel-btns{display:flex;flex-direction:column;gap:8px}
 .data-btn{width:100%;padding:13px 16px;border-radius:var(--radius-sm);font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;border:1px solid var(--border);display:flex;align-items:center;gap:10px;transition:all 0.15s}
-.data-btn:active{opacity:0.7}
 .data-btn.export-btn{background:var(--accent-dim);border-color:rgba(26,158,126,0.3);color:var(--accent2)}
 .data-btn.import-btn{background:rgba(74,158,221,0.08);border-color:rgba(74,158,221,0.3);color:var(--blue)}
 .data-btn.danger-btn{background:rgba(224,82,82,0.07);border-color:rgba(224,82,82,0.25);color:var(--red)}
-.data-btn-icon{font-size:18px}
-.data-btn-text{}
-.data-btn-text strong{display:block;font-size:13px;font-weight:600}
-.data-btn-text span{font-size:11px;opacity:0.8}
-
-/* TOAST */
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:white;padding:11px 18px;border-radius:11px;font-size:13px;font-weight:500;opacity:0;transition:all 0.3s;z-index:200;white-space:nowrap;pointer-events:none;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* CONFIRM */
 .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:150;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;padding:20px}
 .confirm-overlay.open{opacity:1;pointer-events:all}
 .confirm-box{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:22px;width:100%;max-width:310px;transform:scale(0.92);transition:transform 0.2s}
@@ -208,8 +142,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .confirm-btns button{flex:1;padding:12px;border-radius:9px;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;border:1px solid var(--border)}
 .confirm-cancel{background:var(--bg3);color:var(--text2)}
 .confirm-ok{background:var(--red);color:white;border-color:var(--red)}
-
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.25s}
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{width:100%;background:var(--bg2);border-radius:22px 22px 0 0;padding:8px 18px 36px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);max-height:92dvh;overflow-y:auto}
@@ -219,29 +151,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .modal-field{margin-bottom:12px}
 .modal-field label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;display:block;margin-bottom:5px}
 .modal-input,.modal-select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:14px;padding:12px 13px;outline:none;appearance:none}
-.modal-input:focus{border-color:var(--accent)}
-.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .modal-btn{width:100%;padding:14px;background:var(--accent);border:none;border-radius:var(--radius-sm);color:white;font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-top:4px}
 .couple-note{font-size:11px;color:var(--pink);margin-top:5px;padding:7px 11px;background:rgba(212,94,173,0.08);border-radius:7px;border:1px solid rgba(212,94,173,0.2)}
 .datetime-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 11px;outline:none;margin-top:5px}
-.datetime-input:focus{border-color:var(--accent)}
-
-/* CATÉGORIES PATIENTS */
 .cat-toggle{display:flex;gap:6px;margin-bottom:14px}
 .cat-btn{flex:1;padding:9px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text3);font-family:var(--font);transition:all 0.15s;text-align:center}
 .cat-btn.active{background:var(--accent-dim);border-color:rgba(26,158,126,0.4);color:var(--accent2)}
-.cat-btn:active{opacity:0.7}
-.badge-archive{background:rgba(77,96,112,0.3);color:var(--text3)}
-
-/* COMMENTAIRE TENSION */
 .tension-comment-row{grid-column:1/-1;padding:0 6px 8px;display:flex;align-items:center;gap:6px}
 .tension-comment-input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);outline:none;color:var(--text2);font-family:var(--font);font-size:11px;padding:4px 2px;width:100%}
-.tension-comment-input::placeholder{color:var(--text3)}
-.tension-comment-input:focus{border-color:var(--accent)}
-.add-comment-btn{width:22px;height:22px;border-radius:6px;background:var(--bg3);border:1px solid var(--border);color:var(--text3);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
-.add-comment-btn:active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent2)}
-
-/* PDF PRINT */
+.add-comment-btn{width:22px;height:22px;border-radius:6px;background:var(--bg3);border:1px solid var(--border);color:var(--text3);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 @media print{
   #app, .no-print, .topbar, .vu-bar, .header-actions, .save-btn, .add-contact-btn {display:none!important}
   body{background:white!important;color:#111!important;padding:0!important;margin:0!important}
@@ -266,21 +184,44 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .pdf-btn{padding:11px 22px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:var(--font)}
 .pdf-btn.print{background:#1a9e7e;color:white}
 .pdf-btn.close{background:#1e2f3d;color:#8aa0b0;border:1px solid rgba(255,255,255,0.07)}
-
 @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .anim{animation:slideUp 0.2s ease both}
-
-/* USER BADGE */
 .user-badge{width:32px;height:32px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border)}
 .trace-user{font-size:9px;color:var(--text3);font-style:italic;text-align:right;margin-top:2px}
-
-/* IMAGE MODAL */
 .modal-btn.choice{text-align:left; display:flex; align-items:center; gap:12px}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <div class="toast" id="toast"></div>
+
+<!-- PIN MODAL -->
+<div class="modal-overlay" id="modal-pin">
+  <div class="modal" style="padding-bottom:30px">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="pin-title">🔒 Accès sécurisé</div>
+    <p style="font-size:13px; color:var(--text2); margin-bottom:20px; text-align:center">Veuillez saisir votre code PIN pour continuer.</p>
+    <div style="display:flex; justify-content:center; gap:10px; margin-bottom:30px">
+      <input type="password" inputmode="numeric" id="pin-input" maxlength="4" style="width:160px; height:50px; background:var(--bg3); border:1px solid var(--border); border-radius:12px; color:var(--text); font-size:32px; text-align:center; letter-spacing:15px; outline:none; font-family:var(--mono)">
+    </div>
+    <button class="modal-btn" onclick="checkPin()">Valider</button>
+  </div>
+</div>
+
+<!-- IMAGE VIEWER MODAL -->
+<div class="modal-overlay" id="modal-viewer">
+  <div class="modal" style="padding-bottom:20px">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="viewer-title">Visualisation</div>
+    <div id="viewer-content" style="width:100%; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:black; display:flex; align-items:center; justify-content:center; min-height:200px; margin-bottom:20px">
+      <img id="viewer-img" src="" style="max-width:100%; max-height:60dvh; display:block">
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+      <button class="modal-btn" onclick="closeViewer()" style="background:var(--bg3); color:var(--text)">Fermer</button>
+      <button class="modal-btn" id="viewer-change-btn" style="background:var(--accent)">Modifier</button>
+    </div>
+  </div>
+</div>
 
 <!-- IMAGE SOURCE MODAL -->
 <div class="modal-overlay" id="modal-image">
@@ -337,8 +278,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
       <div class="modal-field"><label>Date de naissance</label><input class="modal-input" id="np-ddn" type="date"></div>
       <div class="modal-field"><label>Médecin référent</label><input class="modal-input" id="np-medecin" placeholder="Dr. Martin" autocomplete="off"></div>
     </div>
-    <div class="modal-field"><label>Adresse</label><input class="modal-input" id="np-adresse" placeholder="12 rue des Lilas, Nîmes" autocomplete="off"></div>
-    <div class="modal-field"><label>Pathologies / notes</label><input class="modal-input" id="np-notes" placeholder="Diabète type 2, HTA..." autocomplete="off"></div>
+    <div class="modal-field"><label>Adresse</label><input class="modal-input" id="np-adresse" placeholder="Adresse complète" autocomplete="off"></div>
+    <div class="modal-field"><label>Pathologies / notes</label><input class="modal-input" id="np-notes" placeholder="Diabète, HTA..." autocomplete="off"></div>
     <div class="modal-field">
       <label>Lier à un patient (couple / foyer)</label>
       <select class="modal-select" id="np-couple" onchange="toggleCoupleNote()"></select>
@@ -368,7 +309,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
       <div class="modal-field"><label>Nom</label><input class="modal-input" id="c-nom" placeholder="Dr. David" autocomplete="off"></div>
       <div class="modal-field"><label>Poste / Fonction</label><input class="modal-input" id="c-role" placeholder="Médecin traitant" autocomplete="off"></div>
     </div>
-    <div class="modal-field"><label>Téléphone</label><input class="modal-input" id="c-tel" placeholder="06 23 48 37 16" type="tel"></div>
+    <div class="modal-field"><label>Téléphone</label><input class="modal-input" id="c-tel" placeholder="06..." type="tel"></div>
     <div class="modal-field"><label>E-mail</label><input class="modal-input" id="c-mail" placeholder="david@exemple.com" type="email"></div>
     <button class="modal-btn" onclick="saveContactModal()">Ajouter</button>
   </div>
@@ -379,13 +320,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 // CONSTANTES & ÉTAT
 // ═══════════════════════════════════════════════
 const COLORS=['#1a9e7e','#4a9edd','#e0a832','#e05252','#9b7de0','#e07a5f'];
-const VERSION='2.0';
+const VERSION='1.0';
+const BUILD_DATE='10/05/2025';
 const DB_NAME = 'SoinsMobileDB';
 const DB_VERSION = 1;
-
 let db;
 
-// INITIALISATION INDEXEDDB
 function initDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -393,6 +333,7 @@ function initDB() {
       const db = e.target.result;
       if (!db.objectStoreNames.contains('patients')) db.createObjectStore('patients', { keyPath: 'id' });
       if (!db.objectStoreNames.contains('files')) db.createObjectStore('files', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('config')) db.createObjectStore('config', { keyPath: 'key' });
     };
     request.onsuccess = (e) => { db = e.target.result; resolve(db); };
     request.onerror = () => reject('DB error');
@@ -403,17 +344,14 @@ async function dbSave(store, data) {
   const tx = db.transaction(store, 'readwrite');
   return new Promise(r => { tx.objectStore(store).put(data).onsuccess = () => r(); });
 }
-
 async function dbGetAll(store) {
   const tx = db.transaction(store, 'readonly');
   return new Promise(r => { tx.objectStore(store).getAll().onsuccess = (e) => r(e.target.result); });
 }
-
 async function dbGet(store, id) {
   const tx = db.transaction(store, 'readonly');
   return new Promise(r => { tx.objectStore(store).get(id).onsuccess = (e) => r(e.target.result); });
 }
-
 async function dbDelete(store, id) {
   const tx = db.transaction(store, 'readwrite');
   return new Promise(r => { tx.objectStore(store).delete(id).onsuccess = () => r(); });
@@ -428,79 +366,106 @@ const ID_DOCS=[
 let S={
   page:'login', patientId:null, docId:null, search:'',
   editPid:null, contactPid:null, category:'active',
-  currentUser: null,
-  patients: []
+  currentUser: null, patients: [], pin: null, authenticated: false
 };
 
 async function startApp() {
   try {
     await initDB();
     S.patients = await dbGetAll('patients');
-    
-    // Migration localStorage
-    if(S.patients.length === 0) {
-      const old = localStorage.getItem('sm_v16') || localStorage.getItem('sm_v15');
-      if(old) {
-        const parsed = JSON.parse(old);
-        for(let p of parsed) { if(!p.status) p.status = 'active'; await dbSave('patients', p); }
-        S.patients = await dbGetAll('patients');
-        toast('🚚 Données migrées');
-      } else {
-        S.patients = defaultPatients();
-        for(let p of S.patients) await dbSave('patients', p);
-      }
+    const configPin = await dbGet('config', 'app_pin');
+    if (configPin) {
+      S.pin = configPin.value;
+      document.getElementById('modal-pin').classList.add('open');
+    } else {
+      S.authenticated = true;
     }
-    
-    // SW
+    if(S.patients.length === 0) {
+      S.patients = defaultPatients();
+      for(let p of S.patients) await dbSave('patients', p);
+    }
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(e => console.error('SW error', e));
     }
-    
     render();
   } catch(e) { toast('❌ Erreur DB'); }
 }
 
-async function save(){
-  if(S.patientId) {
-    const p = P(S.patientId);
-    if(p) await dbSave('patients', p);
+function checkPin() {
+  const val = document.getElementById('pin-input').value;
+  if (val === S.pin) {
+    S.authenticated = true;
+    document.getElementById('modal-pin').classList.remove('open');
+    render();
+    toast('🔓 Accès autorisé');
   } else {
-    for(let p of S.patients) await dbSave('patients', p);
+    toast('❌ Code PIN incorrect');
+    document.getElementById('pin-input').value = '';
   }
 }
 
-// GESTION DES IMAGES BETA 2.0
+async function setAppPin() {
+  const p = prompt('Saisir le nouveau code PIN (4 chiffres) ou laisser vide pour désactiver :');
+  if (p === null) return;
+  if (p === '') {
+    await dbDelete('config', 'app_pin');
+    S.pin = null;
+    toast('🔓 Protection désactivée');
+  } else if (/^\d{4}$/.test(p)) {
+    await dbSave('config', {key: 'app_pin', value: p});
+    S.pin = p;
+    toast('🔒 Code PIN enregistré');
+  } else {
+    toast('❌ Format invalide (4 chiffres)');
+  }
+}
+
+async function save(){
+  if(S.patientId) { const p = P(S.patientId); if(p) await dbSave('patients', p); }
+  else { for(let p of S.patients) await dbSave('patients', p); }
+}
+
 let _imgTarget = null;
-function openImageModal(target){
-  _imgTarget = target;
-  document.getElementById('modal-image').classList.add('open');
+async function handleIdClick(pid, key) {
+  const p = P(pid); let img = p.idDocs ? p.idDocs[key] : null;
+  const docInfo = ID_DOCS.find(d => d.key === key);
+  if (img) {
+    if (img.startsWith('id_')) {
+      const fileData = await dbGet('files', img);
+      if (fileData) img = URL.createObjectURL(fileData.blob);
+      else return toast('❌ Image introuvable');
+    }
+    openViewer(img, docInfo.label, {type:'id', pid, key, label:docInfo.label});
+  } else openImageModal({type:'id', pid, key, label:docInfo.label});
 }
-function closeImageModal(){
-  document.getElementById('modal-image').classList.remove('open');
-  _imgTarget = null;
+
+function openViewer(src, title, target) {
+  document.getElementById('viewer-img').src = src;
+  document.getElementById('viewer-title').textContent = title;
+  document.getElementById('viewer-change-btn').onclick = () => { closeViewer(); openImageModal(target); };
+  document.getElementById('modal-viewer').classList.add('open');
 }
+function closeViewer() { document.getElementById('modal-viewer').classList.remove('open') }
+function openImageModal(target){ _imgTarget = target; document.getElementById('modal-image').classList.add('open'); }
+function closeImageModal(){ document.getElementById('modal-image').classList.remove('open'); _imgTarget = null; }
+
 function triggerCapture(source){
-  const inp=document.createElement('input');
-  inp.type='file'; inp.accept='image/*';
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
   if(source === 'camera') inp.capture='environment';
-  
   inp.onchange=async()=>{
     if(inp.files[0]){
-      const file = inp.files[0];
-      closeImageModal();
+      const file = inp.files[0]; closeImageModal();
       if(_imgTarget.type === 'id') {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          const p=P(_imgTarget.pid); if(!p.idDocs) p.idDocs={};
-          p.idDocs[_imgTarget.key] = e.target.result;
-          await save(); render(); toast('📸 '+_imgTarget.label+' enregistré');
-        };
-        reader.readAsDataURL(file);
+        toast('📸 Enregistrement...');
+        const fileId = `id_${_imgTarget.pid}_${_imgTarget.key}_${Date.now()}`;
+        await dbSave('files', { id: fileId, blob: file, label: _imgTarget.label, pid: _imgTarget.pid });
+        const p=P(_imgTarget.pid); if(!p.idDocs) p.idDocs={};
+        p.idDocs[_imgTarget.key] = fileId; 
+        await save(); render(); toast('📸 '+_imgTarget.label+' enregistré');
       } else {
         const fileId = await standardizeToPdf(file, _imgTarget.label, _imgTarget.pid, _imgTarget.did);
         const p=P(_imgTarget.pid); const d=p.docs.find(x=>x.id==_imgTarget.did);
-        d.pdfId = fileId;
-        await save(); render(); toast('📸 Document standardisé');
+        d.pdfId = fileId; await save(); render(); toast('📸 Document standardisé');
       }
     }
   };
@@ -515,13 +480,11 @@ async function standardizeToPdf(file, label, pid, did){
       const imgData = e.target.result;
       const html = `<div style="padding:40px; text-align:center; font-family: sans-serif">
         <h1 style="font-size:20px; color: #1a9e7e">${label}</h1>
-        <div style="margin: 20px 0; border: 1px solid #eee; padding: 10px">
-           <img src="${imgData}" style="max-width:100%">
-        </div>
+        <div style="margin: 20px 0; border: 1px solid #eee; padding: 10px"><img src="${imgData}" style="max-width:100%"></div>
         <p style="margin-top:20px; font-size:12px; color:#666">Standardisé le ${new Date().toLocaleString()}</p>
-        <p style="font-size:10px; color:#999">SoinsMobile Beta 2.0</p>
+        <p style="font-size:10px; color:#999">SoinsMobile V1.0</p>
       </div>`;
-      const opt = { margin: 0, filename: 'temp.pdf', image: { type: 'jpeg', quality: 0.95 }, html2canvas: { scale: 1.5 }, jsPDF: { unit: 'mm', format: 'a4' } };
+      const opt = { margin:0, filename:'temp.pdf', image:{type:'jpeg',quality:0.95}, html2canvas:{scale:1.5}, jsPDF:{unit:'mm',format:'a4'} };
       const worker = html2pdf().set(opt).from(html);
       const pdfBlob = await worker.output('blob');
       const fileId = `file_${pid}_${did}_${Date.now()}`;
@@ -548,9 +511,6 @@ function defaultPatients(){return[
     ]}
 ];}
 
-// ═══════════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════════
 const P=id=>S.patients.find(p=>p.id==id);
 const ini=p=>(p.prenom[0]||'')+(p.nom[0]||'');
 const fd=d=>{if(!d)return '';try{const[y,m,j]=d.split('-');return`${j}/${m}/${y}`}catch{return d}};
@@ -566,7 +526,6 @@ function toast(msg,dur=2400){
   t.textContent=msg;t.classList.add('show');
   clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),dur);
 }
-
 function copy(txt,lbl){
   navigator.clipboard.writeText(txt).then(()=>toast('📋 '+lbl+' copié')).catch(()=>{
     const e=document.createElement('textarea');e.value=txt;document.body.appendChild(e);e.select();document.execCommand('copy');document.body.removeChild(e);toast('📋 '+lbl+' copié');
@@ -574,51 +533,33 @@ function copy(txt,lbl){
 }
 
 let _cb=null;
-function showConfirm(title,msg,okLabel,cb,okClass=''){
+function showConfirm(title,msg,okLabel,cb){
   document.getElementById('confirm-title').textContent=title;
   document.getElementById('confirm-msg').textContent=msg;
   const btn=document.getElementById('confirm-ok-btn');
   btn.textContent=okLabel||'OK';
-  btn.className='confirm-ok'+(okClass?' '+okClass:'');
   _cb=cb;document.getElementById('confirm-overlay').classList.add('open');
 }
 function closeConfirm(){document.getElementById('confirm-overlay').classList.remove('open');_cb=null}
 document.getElementById('confirm-ok-btn').onclick=()=>{if(_cb)_cb();closeConfirm()};
-document.getElementById('confirm-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeConfirm()});
 
-// ═══════════════════════════════════════════════
-// RENDER PRINCIPAL
-// ═══════════════════════════════════════════════
-function selectUser(user){
-  S.currentUser = user;
-  S.page = 'home';
-  render();
-}
-
+function selectUser(user){ S.currentUser = user; S.page = 'home'; render(); }
 function renderLogin(){
-  return `
-  <div style="height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center; background:linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%)">
+  if (!S.authenticated) return '';
+  return `<div style="height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center; background:linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%)">
     <img src="logo.png" style="width:80px; height:80px; border-radius:18px; margin-bottom:15px; box-shadow:0 8px 24px rgba(0,0,0,0.3)">
     <h1 style="font-size:24px; font-weight:700; margin-bottom:5px">SoinsMobile</h1>
     <p style="color:var(--text3); font-size:14px; margin-bottom:40px">Sélectionnez votre profil pour commencer</p>
-    
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; width:100%; max-width:340px">
-      <div class="patient-card" style="flex-direction:column; padding:25px 15px; border-color:rgba(255,255,255,0.05); text-align:center; display:flex; align-items:center; justify-content:center" onclick="selectUser('Florence')">
-        <div style="font-size:40px; margin-bottom:10px">🐶</div>
-        <div style="font-weight:600">Florence</div>
-      </div>
-      <div class="patient-card" style="flex-direction:column; padding:25px 15px; border-color:rgba(255,255,255,0.05); text-align:center; display:flex; align-items:center; justify-content:center" onclick="selectUser('Céline')">
-        <div style="font-size:40px; margin-bottom:10px">🐴</div>
-        <div style="font-weight:600">Céline</div>
-      </div>
+      <div class="patient-card" style="flex-direction:column; padding:25px 15px; border-color:rgba(255,255,255,0.05); text-align:center" onclick="selectUser('Florence')"><div style="font-size:40px; margin-bottom:10px">🐶</div><div style="font-weight:600">Florence</div></div>
+      <div class="patient-card" style="flex-direction:column; padding:25px 15px; border-color:rgba(255,255,255,0.05); text-align:center" onclick="selectUser('Céline')"><div style="font-size:40px; margin-bottom:10px">🐴</div><div style="font-weight:600">Céline</div></div>
     </div>
-    
     <div style="position:fixed; bottom:20px; font-size:10px; color:var(--text3)">Version ${VERSION} • Tracé par utilisateur</div>
   </div>`;
 }
 
 function render(){
-  const a=document.getElementById('app');
+  const a=document.getElementById('app'); if(!S.authenticated) { a.innerHTML=''; return; }
   if(S.page==='login') a.innerHTML=renderLogin();
   else if(S.page==='home') a.innerHTML=renderHome();
   else if(S.page==='dossier') a.innerHTML=renderDossier();
@@ -628,9 +569,6 @@ function render(){
   else if(S.page==='ordonnancier') a.innerHTML=renderOrdonnancier();
 }
 
-// ═══════════════════════════════════════════════
-// HOME
-// ═══════════════════════════════════════════════
 function renderHome(){
   const q=S.search.toLowerCase();
   const fil=S.patients.filter(p=>p.status===S.category && `${p.nom} ${p.prenom} ${p.notes||''} ${p.adresse||''}`.toLowerCase().includes(q));
@@ -638,46 +576,34 @@ function renderHome(){
   const seenCount=S.patients.filter(p=>p.status==='active' && (p.seenDates||[]).includes(ts)).length;
   const done=new Set();let html='';
   fil.forEach(p=>{
-    if(done.has(p.id))return;done.add(p.id);
+    if(done.has(p.id))return; done.add(p.id);
     const partner=p.coupleWith?fil.find(x=>x.id===p.coupleWith):null;
-    if(partner&&!done.has(partner.id)){
-      done.add(partner.id);
-      html+=`<div class="couple-group anim"><div class="couple-label">💑 ${p.adresse||'Passage groupé'}</div>${pCard(p,ts)}${pCard(partner,ts)}</div>`;
-    }else html+=pCard(p,ts);
+    if(partner&&!done.has(partner.id)){ done.add(partner.id); html+=`<div class="couple-group anim"><div class="couple-label">💑 ${p.adresse||'Passage groupé'}</div>${pCard(p,ts)}${pCard(partner,ts)}</div>`; }
+    else html+=pCard(p,ts);
   });
-  
   const userIcon = S.currentUser === 'Florence' ? '🐶' : '🐴';
-
-  return `
-  <div class="topbar">
-    <div class="topbar-center" style="text-align:left">
-      <div class="topbar-title">SoinsMobile <span style="font-size:10px;color:var(--text3);font-weight:400">v${VERSION}</span></div>
-      <div style="font-size:10px;color:var(--text3)">${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</div>
-    </div>
+  return `<div class="topbar">
+    <div class="topbar-center" style="text-align:left"><div class="topbar-title">SoinsMobile <span style="font-size:10px;color:var(--text3);font-weight:400">v${VERSION}</span></div><div style="font-size:10px;color:var(--text3)">${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</div></div>
     <div class="topbar-actions">
-      <button class="tbtn ghost" onclick="go('ordonnancier')" title="Ordonnancier">💊</button>
-      <div class="user-badge" title="Profil connecté : ${S.currentUser}">${userIcon}</div>
-      <button class="tbtn ghost" onclick="go('data')" title="Données">⚙️</button>
-      <button class="tbtn accent" onclick="openPModal()" title="Nouveau patient">➕</button>
+      <button class="tbtn ghost" onclick="go('ordonnancier')">💊</button>
+      <div class="user-badge">${userIcon}</div>
+      <button class="tbtn ghost" onclick="go('data')">⚙️</button>
+      <button class="tbtn accent" onclick="openPModal()">➕</button>
     </div>
   </div>
   <div class="content anim">
-    <div class="cat-toggle" style="gap:4px">
-      <div class="cat-btn ${S.category==='active'?'active':''}" style="font-size:11px;padding:8px 4px;flex:1" onclick="S.category='active';render()">En cours</div>
-      <div class="cat-btn ${S.category==='pds'?'active':''}" style="font-size:11px;padding:8px 4px;flex:1" onclick="S.category='pds';render()">Prises de sang</div>
-      <div class="cat-btn ${S.category==='archived'?'active':''}" style="font-size:11px;padding:8px 4px;flex:1" onclick="S.category='archived';render()">Anciens</div>
+    <div class="cat-toggle">
+      <div class="cat-btn ${S.category==='active'?'active':''}" onclick="S.category='active';render()">En cours</div>
+      <div class="cat-btn ${S.category==='pds'?'active':''}" onclick="S.category='pds';render()">PDS</div>
+      <div class="cat-btn ${S.category==='archived'?'active':''}" onclick="S.category='archived';render()">Anciens</div>
     </div>
     <div class="stats-bar">
       <div class="stat-chip"><div class="val">${S.patients.filter(p=>p.status==='active'||p.status==='pds').length}</div><div class="lbl">Actifs</div></div>
       <div class="stat-chip"><div class="val">${seenCount}</div><div class="lbl">Vus auj.</div></div>
       <div class="stat-chip"><div class="val">${S.patients.filter(p=>p.status==='active'&&p.urgent).length}</div><div class="lbl">Urgents</div></div>
     </div>
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input class="search-input" id="si" placeholder="Nom, pathologie, adresse..." value="${S.search}"
-        oninput="S.search=this.value;render();const el=document.getElementById('si');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}">
-    </div>
-    <div class="section-label">${fil.length} patient${fil.length>1?'s':''}</div>
+    <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="si" placeholder="Nom, pathologie, adresse..." value="${S.search}" oninput="S.search=this.value;render();const el=document.getElementById('si');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}"></div>
+    <div class="section-label">${fil.length} patient(s)</div>
     <div class="patient-list">${html||'<div style="color:var(--text3);font-size:13px;text-align:center;padding:32px">Aucun résultat</div>'}</div>
   </div>`;
 }
@@ -686,401 +612,174 @@ function pCard(p,ts){
   const seen=(p.seenDates||[]).includes(ts);
   return `<div class="patient-card${p.urgent?' urgent':''}${seen?' seen-today':''}" onclick="openD(${p.id})">
     <div class="patient-avatar" style="background:${p.color}22;color:${p.color}">${ini(p)}</div>
-    <div class="patient-info">
-      <div class="patient-name">${p.prenom} ${p.nom}</div>
-      <div class="patient-meta">${age(p.ddn)} — ${p.medecin}</div>
-      <div class="patient-meta" style="color:var(--text3)">${p.notes||''}</div>
-    </div>
+    <div class="patient-info"><div class="patient-name">${p.prenom} ${p.nom}</div><div class="patient-meta">${age(p.ddn)} — ${p.medecin}</div><div class="patient-meta" style="color:var(--text3)">${p.notes||''}</div></div>
     <span class="badge${p.urgent?' badge-alert':seen?' badge-ok':''}">${p.urgent?'⚡':seen?'✓ Vu':''}</span>
   </div>`;
 }
 
-// ═══════════════════════════════════════════════
-// DOSSIER
-// ═══════════════════════════════════════════════
 function renderDossier(){
   const p=P(S.patientId);if(!p)return '';
   const partner=p.coupleWith?P(p.coupleWith):null;
-  const ts=todayStr();
-  const seen=(p.seenDates||[]).includes(ts);
-  const contacts=p.contacts||[];
-  const idDocs=p.idDocs||{};
-
-  // Rappels ordonnances
-  const nowTs = new Date().getTime();
+  const ts=todayStr(); const seen=(p.seenDates||[]).includes(ts);
+  const contacts=p.contacts||[]; const idDocs=p.idDocs||{};
+  const nowTs = Date.now();
   const rappels = p.docs.filter(d => d.type === 'ordonnance' && d.expiryDate).map(o => {
-    const diffDays = Math.ceil((new Date(o.expiryDate).getTime() - nowTs) / (1000 * 60 * 60 * 24));
-    if(diffDays <= 20) return {id: o.id, days: diffDays};
-    return null;
+    const dDays = Math.ceil((new Date(o.expiryDate).getTime() - nowTs) / 86400000);
+    return dDays <= 20 ? {id: o.id, days: dDays} : null;
   }).filter(r => r !== null);
-
-  return `
-  <div class="topbar">
+  return `<div class="topbar">
     <button class="topbar-back tbtn ghost" onclick="go('home')">←</button>
-    <div class="topbar-center">
-      <div class="topbar-title">${p.prenom} ${p.nom}</div>
-      <div class="topbar-sub">${age(p.ddn)} · ${p.medecin}</div>
-    </div>
+    <div class="topbar-center"><div class="topbar-title">${p.prenom} ${p.nom}</div><div class="topbar-sub">${age(p.ddn)} · ${p.medecin}</div></div>
     <div class="topbar-placeholder"></div>
   </div>
   <div class="content anim">
-
-    ${rappels.length > 0 ? `
-    <div style="background:rgba(224,82,82,0.1); border:1px solid var(--red); border-radius:12px; padding:12px; margin-bottom:14px; display:flex; align-items:center; gap:10px">
-      <span style="font-size:20px">⚠️</span>
-      <div style="flex:1">
-        <div style="font-size:13px; font-weight:600; color:var(--red)">Renouvellement ordonnance</div>
-        <div style="font-size:11px; color:var(--text2)">
-          ${rappels.map(r => `L'ordonnance expire dans <strong>${r.days} jour${r.days > 1 ? 's' : ''}</strong> (J${r.days >= 0 ? '-' : '+'}${Math.abs(r.days)})`).join('<br>')}
-        </div>
-      </div>
-    </div>` : ''}
-
+    ${rappels.length > 0 ? `<div style="background:rgba(224,82,82,0.1); border:1px solid var(--red); border-radius:12px; padding:12px; margin-bottom:14px; display:flex; align-items:center; gap:10px">
+      <span style="font-size:20px">⚠️</span><div style="flex:1"><div style="font-size:13px; font-weight:600; color:var(--red)">Renouvellement ordonnance</div>
+      <div style="font-size:11px; color:var(--text2)">${rappels.map(r => `Expire dans <strong>${r.days} j</strong> (J${r.days >= 0 ? '-' : '+'}${Math.abs(r.days)})`).join('<br>')}</div></div></div>` : ''}
     <div class="patient-header">
-      <div class="ph-top">
-        <div class="patient-avatar-lg" style="background:${p.color}22;color:${p.color}">${ini(p)}</div>
-        <div class="ph-info" style="flex:1">
-          <h2>${p.prenom} ${p.nom}</h2>
-          <p>Né(e) le ${fd(p.ddn)}</p>
-          ${p.adresse?`<p>📍 ${p.adresse}</p>`:''}
-          <div class="patient-tags">
-            <span class="tag">${p.medecin}</span>
-            ${partner?`<span class="tag couple">💑 ${partner.prenom} ${partner.nom}</span>`:''}
-            ${(p.notes||'').split(',').map(n=>n.trim()?`<span class="tag">${n.trim()}</span>`:'').join('')}
-          </div>
-        </div>
-      </div>
+      <div class="ph-top"><div class="patient-avatar-lg" style="background:${p.color}22;color:${p.color}">${ini(p)}</div><div class="ph-info" style="flex:1"><h2>${p.prenom} ${p.nom}</h2><p>Né(e) le ${fd(p.ddn)}</p>${p.adresse?`<p>📍 ${p.adresse}</p>`:''}<div class="patient-tags"><span class="tag">${p.medecin}</span>${partner?`<span class="tag couple">💑 ${partner.prenom} ${partner.nom}</span>`:''}${(p.notes||'').split(',').map(n=>n.trim()?`<span class="tag">${n.trim()}</span>`:'').join('')}</div></div></div>
       <div class="vu-bar"><button class="vu-btn ${seen?'is-seen':'not-seen'}" onclick="toggleVu(${p.id})">${seen?'✅ Vu aujourd\'hui':'⬜ Marquer comme vu'}</button></div>
-      <div class="header-actions">
-        <button class="btn-sm primary" onclick="openPModal(${p.id})">✏️ Modifier</button>
-        <button class="btn-sm danger" onclick="confirmDel(${p.id})">🗑 Supprimer</button>
-      </div>
+      <div class="header-actions"><button class="btn-sm primary" onclick="openPModal(${p.id})">✏️ Modifier</button><button class="btn-sm danger" onclick="confirmDel(${p.id})">🗑 Supprimer</button></div>
     </div>
-
-    <div class="section-label">Documents d'identité</div>
-    <div class="id-docs-grid">
-      ${ID_DOCS.map(d=>{
-        const img = idDocs[d.key];
-        return `<div class="id-doc-card${img?' has-photo':''}" onclick="openImageModal({type:'id', pid:${p.id}, key:'${d.key}', label:'${d.label}'})" style="position:relative; overflow:hidden">
-          ${img ? `<img src="${img}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.3">` : ''}
-          <span class="id-icon" style="position:relative; z-index:1">${d.icon}</span>
-          <div class="id-label" style="position:relative; z-index:1">${d.label}</div>
-          <div class="id-status" style="position:relative; z-index:1">${img?'✓ Photo enregistrée':'Appuyer pour photographier'}</div>
-        </div>`;
-      }).join('')}
-    </div>
-
-    <div class="section-label">Contacts (${contacts.length})</div>
-    <div class="contact-list">
-      ${contacts.map(c=>cCard(c,p.id)).join('')}
-      <button class="add-contact-btn" onclick="openCModal(${p.id})">＋ Ajouter un contact</button>
-    </div>
-
-    <div class="section-label">Documents médicaux (${p.docs.length})</div>
-    <div class="docs-grid">
-      ${p.docs.map(d=>`
-        <div class="doc-card" onclick="openF(${p.id},${d.id})">
-          <span class="doc-icon">${d.icon}</span>
-          <div class="doc-name">${d.title || d.label} ${d.pdfId ? '📄' : ''}</div>
-          <div class="doc-datetime">${fdt(d.datetime)}</div>
-          <div class="trace-user">Par ${d.user || '?'}</div>
-        </div>`).join('')}
-      <div class="doc-card add-doc" onclick="S.patientId=${p.id};go('modeles')">
-        <span style="font-size:24px;color:var(--accent)">＋</span>
-        <div style="font-size:11px;color:var(--text2);margin-top:3px">Nouveau doc</div>
-      </div>
-    </div>
+    <div class="section-label">Identité</div>
+    <div class="id-docs-grid">${ID_DOCS.map(d=>{ const img = idDocs[d.key]; return `<div class="id-doc-card${img?' has-photo':''}" onclick="handleIdClick(${p.id}, '${d.key}')">${img ? `<img src="${img.startsWith('id_')?'':img}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.3">` : ''}<span class="id-icon">${d.icon}</span><div class="id-label">${d.label}</div><div class="id-status">${img?'✓ Enregistré':'Photo'}</div></div>`; }).join('')}</div>
+    <div class="section-label">Contacts</div>
+    <div class="contact-list">${contacts.map(c=>cCard(c,p.id)).join('')}<button class="add-contact-btn" onclick="openCModal(${p.id})">＋ Ajouter un contact</button></div>
+    <div class="section-label">Documents</div>
+    <div class="docs-grid">${p.docs.map(d=>`<div class="doc-card" onclick="openF(${p.id},${d.id})"><span class="doc-icon">${d.icon}</span><div class="doc-name">${d.title || d.label} ${d.pdfId ? '📄' : ''}</div><div class="doc-datetime">${fdt(d.datetime)}</div><div class="trace-user">Par ${d.user || '?'}</div></div>`).join('')}<div class="doc-card add-doc" onclick="S.patientId=${p.id};go('modeles')"><span style="font-size:24px;color:var(--accent)">＋</span><div style="font-size:11px;color:var(--text2)">Nouveau doc</div></div></div>
   </div>`;
 }
 
 function cCard(c,pid){
-  return `<div class="contact-card">
-    <div class="contact-top">
-      <div><div class="contact-name">${c.nom}</div><div class="contact-role">${c.role||''}</div></div>
-      <button class="btn-sm danger" style="padding:4px 9px;font-size:11px" onclick="delContact(${pid},${c.id})">✕</button>
-    </div>
-    <div class="contact-actions">
-      ${c.tel?`<a class="contact-btn tel" href="tel:${c.tel.replace(/\s/g,'')}">📞 ${c.tel}</a><button class="contact-btn" onclick="copy('${c.tel}','Tél')" style="padding:6px 9px">📋</button>`:''}
-      ${c.mail?`<a class="contact-btn mail" href="mailto:${c.mail}">✉️ ${c.mail}</a><button class="contact-btn" onclick="copy('${c.mail}','Mail')" style="padding:6px 9px">📋</button>`:''}
-    </div>
-  </div>`;
+  return `<div class="contact-card"><div class="contact-top"><div><div class="contact-name">${c.nom}</div><div class="contact-role">${c.role||''}</div></div><button class="btn-sm danger" style="padding:4px 9px" onclick="delContact(${pid},${c.id})">✕</button></div>
+    <div class="contact-actions">${c.tel?`<a class="contact-btn tel" href="tel:${c.tel}">📞 ${c.tel}</a><button class="contact-btn" onclick="copy('${c.tel}','Tél')">📋</button>`:''}${c.mail?`<a class="contact-btn mail" href="mailto:${c.mail}">✉️ ${c.mail}</a><button class="contact-btn" onclick="copy('${c.mail}','Mail')">📋</button>`:''}</div></div>`;
 }
 
 function renderModeles(){
-  const ms=[
-    {t:'tension',i:'🩺',l:'Fiche tension',d:'Tableau multi-mesures avec date auto'},
-    {t:'glycemie',i:'🩸',l:'Fiche glycémie',d:'Mesures avant/après repas + insuline'},
-    {t:'pansement',i:'🩹',l:'Fiche pansement / plaie',d:'Localisation, aspect, traitement'},
-    {t:'labo',i:'🧪',l:'Document labo',d:'Analyse de sang et résultats'},
-    {t:'consentement',i:'✍️',l:'Consentement',d:'Accord et signature patient'},
-    {t:'ordonnance',i:'💊',l:'Ordonnance',d:'Photo standardisée PDF + rappel'},
-    {t:'cr',i:'📋',l:'Compte rendu',d:'Notes libres structurées'},
-  ];
-  return `
-  <div class="topbar">
-    <button class="topbar-back tbtn ghost" onclick="go('dossier')">←</button>
-    <div class="topbar-center"><div class="topbar-title">Modèles</div></div>
-    <div class="topbar-placeholder"></div>
-  </div>
-  <div class="content anim">
-    <div class="modele-grid">${ms.map(m=>`
-      <div class="modele-item" onclick="createDoc('${m.t}')">
-        <span class="modele-icon">${m.i}</span>
-        <div class="modele-info"><h3>${m.l}</h3><p>${m.d}</p></div>
-        <span class="modele-arrow">›</span>
-      </div>`).join('')}
-    </div>
-  </div>`;
+  const ms=[{t:'tension',i:'🩺',l:'Fiche tension',d:'Tableau multi-mesures'},{t:'glycemie',i:'🩸',l:'Fiche glycémie',d:'Avant/après repas'},{t:'pansement',i:'🩹',l:'Pansement',d:'Localisation, aspect'},{t:'labo',i:'🧪',l:'Labo',d:'Résultats'},{t:'consentement',i:'✍️',l:'Consentement',d:'Signature'},{t:'ordonnance',i:'💊',l:'Ordonnance',d:'Scan PDF'},{t:'cr',i:'📋',l:'Compte rendu',d:'Notes libres'}];
+  return `<div class="topbar"><button class="topbar-back tbtn ghost" onclick="go('dossier')">←</button><div class="topbar-center"><div class="topbar-title">Modèles</div></div><div class="topbar-placeholder"></div></div>
+  <div class="content anim"><div class="modele-grid">${ms.map(m=>`<div class="modele-item" onclick="createDoc('${m.t}')"><span class="modele-icon">${m.i}</span><div class="modele-info"><h3>${m.l}</h3><p>${m.d}</p></div><span class="modele-arrow">›</span></div>`).join('')}</div></div>`;
 }
 
 function renderForm(){
-  const p=P(S.patientId);const d=p&&p.docs.find(x=>x.id==S.docId);if(!d)return '';
+  const p=P(S.patientId); const d=p&&p.docs.find(x=>x.id==S.docId); if(!d)return '';
   const fns={tension:fTension,glycemie:fGlycemie,pansement:fPansement,labo:fLabo,consentement:fConsentement,ordonnance:fOrdonnance,cr:fCR};
-  return `
-  <div class="topbar">
-    <button class="topbar-back tbtn ghost" onclick="go('dossier')">←</button>
-    <div class="topbar-center"><div class="topbar-title">${d.label}</div></div>
-    <div class="topbar-actions"><button class="tbtn ghost" onclick="openPdf(${p.id},${d.id})" title="Exporter en PDF">📄</button></div>
-  </div>
-  <div class="content anim">
-    <div class="form-header">
-      <div class="form-title">${d.icon} ${d.label}</div>
-      <div class="form-patient">${p.prenom} ${p.nom}</div>
-      <div style="margin-top:10px">
-        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:600">Date et heure</div>
-        <input type="datetime-local" id="doc-dt" value="${d.datetime||now()}" class="datetime-input" oninput="autoSaveForm()">
-      </div>
-      <div class="trace-user" style="text-align:left; margin-top:8px">Auteur : <strong>${d.user || S.currentUser}</strong></div>
-    </div>
-    ${(fns[d.type]||fCR)(d,p)}
-    <button class="save-btn" onclick="saveForm()">💾 Enregistrer & Fermer</button>
-  </div>`;
+  return `<div class="topbar"><button class="topbar-back tbtn ghost" onclick="go('dossier')">←</button><div class="topbar-center"><div class="topbar-title">${d.label}</div></div><div class="topbar-actions"><button class="tbtn ghost" onclick="openPdf(${p.id},${d.id})">📄</button></div></div>
+  <div class="content anim"><div class="form-header"><div class="form-title">${d.icon} ${d.label}</div><div class="form-patient">${p.prenom} ${p.nom}</div><div style="margin-top:10px"><div style="font-size:10px;text-transform:uppercase">Date et heure</div><input type="datetime-local" id="doc-dt" value="${d.datetime||now()}" class="datetime-input" oninput="autoSaveForm()"></div><div class="trace-user" style="text-align:left">Auteur : <strong>${d.user || S.currentUser}</strong></div></div>
+    ${(fns[d.type]||fCR)(d,p)}<button class="save-btn" onclick="saveForm()">💾 Enregistrer & Fermer</button></div>`;
 }
 
 function fTension(d){
   if(!d.entries)d.entries=[{date:todayFr(),heure:nowTime(),sys:'',dia:'',pouls:'',comment:'',user:S.currentUser}];
-  return `<div class="form-section"><div class="form-section-title">Mesures</div>
-    <div class="measure-table">
-      <div class="mt-head mt-tension"><div class="mt-cell hdr">Date</div><div class="mt-cell hdr">Heure</div><div class="mt-cell hdr">Sys.</div><div class="mt-cell hdr">Dia.</div><div class="mt-cell hdr">Pouls</div></div>
-      <div id="tension-rows">${d.entries.map((e,i)=>tensionRowHTML(e,i)).join('')}</div>
-    </div>
-    <button onclick="addTRow()" style="width:100%;margin-top:8px;padding:10px;background:var(--bg3);border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:13px;cursor:pointer">＋ Ajouter une ligne</button>
-  </div>
+  return `<div class="form-section"><div class="form-section-title">Mesures</div><div class="measure-table"><div class="mt-head mt-tension"><div class="mt-cell hdr">Date</div><div class="mt-cell hdr">Heure</div><div class="mt-cell hdr">Sys</div><div class="mt-cell hdr">Dia</div><div class="mt-cell hdr">Pouls</div></div><div id="tension-rows">${d.entries.map((e,i)=>tensionRowHTML(e,i)).join('')}</div></div><button onclick="addTRow()" style="width:100%;margin-top:8px;padding:10px;background:var(--bg3);border:1px dashed var(--border);border-radius:10px;color:var(--text2)">＋ Ligne</button></div>
   <div class="form-section"><div class="form-section-title">Observations</div><textarea class="field-textarea" id="obs-t" oninput="autoSaveForm()">${d.obs||''}</textarea></div>`;
 }
+const toIso = fr => { if(!fr) return todayStr(); const parts = fr.split('/'); if(parts.length !== 3) return todayStr(); return `${parts[2]}-${parts[1]}-${parts[0]}`; };
+const toFr = iso => { if(!iso) return todayFr(); const parts = iso.split('-'); if(parts.length !== 3) return todayFr(); return `${parts[2]}/${parts[1]}/${parts[0]}`; };
 
 function tensionRowHTML(e,i){
-  return `<div class="mt-row mt-tension">
-    <div class="mt-cell"><span class="dt-display">${e.date||todayFr()}</span></div>
-    <div class="mt-cell"><input data-t="heure" data-i="${i}" value="${e.heure||''}" type="time" style="width:52px" oninput="autoSaveForm()"></div>
-    <div class="mt-cell"><input data-t="sys" data-i="${i}" value="${e.sys||''}" type="number" oninput="autoSaveForm()"></div>
-    <div class="mt-cell"><input data-t="dia" data-i="${i}" value="${e.dia||''}" type="number" oninput="autoSaveForm()"></div>
-    <div class="mt-cell"><input data-t="pouls" data-i="${i}" value="${e.pouls||''}" type="number" oninput="autoSaveForm()"></div>
-    <div class="tension-comment-row" id="t-com-row-${i}" style="display:${e.comment?'flex':'none'}; grid-column:1/-1; padding:4px 10px 8px">
-      <input class="tension-comment-input" data-t="comment" data-i="${i}" value="${e.comment||''}" placeholder="Commentaire..." oninput="autoSaveForm()">
-      <div class="trace-user">Par ${e.user || S.currentUser}</div>
-    </div>
-    <div style="grid-column:1/-1; display:flex; justify-content:flex-end; padding:2px 8px 6px">
-       <button class="add-comment-btn" onclick="toggleTCom(${i})" style="font-size:10px; padding:2px 8px; border-radius:6px; background:var(--bg3); border:1px solid var(--border); color:var(--text3)">${e.comment?'💬':'＋ Com.'}</button>
-    </div>
-  </div>`;
-}
-
-function toggleTCom(i){const el=document.getElementById(`t-com-row-${i}`); if(el) el.style.display=el.style.display==='none'?'flex':'none'}
-
-function fGlycemie(d){
-  if(!d.entries)d.entries=[{date:todayFr(),heure:'07:00',avant:'',apres:'',user:S.currentUser},{date:todayFr(),heure:'12:00',avant:'',apres:'',user:S.currentUser}];
-  return `<div class="form-section"><div class="form-section-title">Glycémies</div>
-    <div class="measure-table">
-      <div class="mt-head mt-glyc"><div class="mt-cell hdr">Date</div><div class="mt-cell hdr">Heure</div><div class="mt-cell hdr">Avant</div><div class="mt-cell hdr">Après</div></div>
-      <div id="glyc-rows">${d.entries.map((e,i)=>glycRowHTML(e,i)).join('')}</div>
-    </div>
-    <button onclick="addGRow()" style="width:100%;margin-top:8px;padding:10px;background:var(--bg3);border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:13px;cursor:pointer">＋ Ajouter une ligne</button>
-  </div>
-  <div class="form-section"><div class="form-section-title">Insuline</div>
-    <div class="field-group">
-      <div class="field-row"><span class="field-label">Type</span><input class="field-input" id="ins-type" value="${d.insType||''}" oninput="autoSaveForm()"></div>
-      <div class="field-row"><span class="field-label">Matin</span><input class="field-input" id="ins-mat" value="${d.insMat||''}" type="number" oninput="autoSaveForm()"> UI</div>
-      <div class="field-row"><span class="field-label">Soir</span><input class="field-input" id="ins-soir" value="${d.insSoir||''}" type="number" oninput="autoSaveForm()"> UI</div>
-    </div>
-  </div>`;
+  return `<div class="mt-row mt-tension"><div class="mt-cell"><input data-t="date" data-i="${i}" value="${toIso(e.date)}" type="date" oninput="autoSaveForm()" style="width:100%; font-size:10px"></div><div class="mt-cell"><input data-t="heure" data-i="${i}" value="${e.heure||''}" type="time" oninput="autoSaveForm()"></div><div class="mt-cell"><input data-t="sys" data-i="${i}" value="${e.sys||''}" type="number" oninput="autoSaveForm()"></div><div class="mt-cell"><input data-t="dia" data-i="${i}" value="${e.dia||''}" type="number" oninput="autoSaveForm()"></div><div class="mt-cell"><input data-t="pouls" data-i="${i}" value="${e.pouls||''}" type="number" oninput="autoSaveForm()"></div>
+    <div class="tension-comment-row" id="t-com-row-${i}" style="display:${e.comment?'flex':'none'};grid-column:1/-1;padding:4px 10px 8px"><input class="tension-comment-input" data-t="comment" data-i="${i}" value="${e.comment||''}" placeholder="Com..." oninput="autoSaveForm()"><div class="trace-user">Par ${e.user || S.currentUser}</div></div>
+    <div style="grid-column:1/-1;display:flex;justify-content:flex-end;padding:2px 8px 6px"><button class="add-comment-btn" onclick="toggleTCom(${i})" style="font-size:10px;padding:2px 8px;border-radius:6px;background:var(--bg3);border:1px solid var(--border)">${e.comment?'💬':'＋ Com'}</button></div></div>`;
 }
 
 function glycRowHTML(e,i){
-  return `<div class="mt-row mt-glyc" style="position:relative">
-    <div class="mt-cell"><span class="dt-display">${e.date||todayFr()}</span></div>
-    <div class="mt-cell"><input data-t="heure" data-i="${i}" value="${e.heure||''}" type="time" style="width:52px" oninput="autoSaveForm()"></div>
-    <div class="mt-cell"><input data-t="avant" data-i="${i}" value="${e.avant||''}" type="number" step="0.01" oninput="autoSaveForm()"></div>
-    <div class="mt-cell"><input data-t="apres" data-i="${i}" value="${e.apres||''}" type="number" step="0.01" oninput="autoSaveForm()"></div>
-    <div class="trace-user" style="position:absolute; bottom:2px; right:5px">${e.user || S.currentUser}</div>
-  </div>`;
-}
-
-function fPansement(d){
-  return `<div class="form-section"><div class="form-section-title">Description</div>
-    <div class="field-group">
-      <div class="field-row"><span class="field-label">Lieu</span><input class="field-input" id="f-loc" value="${d.localisation||''}" oninput="autoSaveForm()"></div>
-      <div class="field-row"><span class="field-label">Taille</span><input class="field-input" id="f-taille" value="${d.taille||''}" oninput="autoSaveForm()"></div>
-    </div>
-  </div>
-  <div class="form-section"><div class="form-section-title">Aspect</div><textarea class="field-textarea" id="f-aspect" oninput="autoSaveForm()">${d.aspect||''}</textarea></div>
-  <div class="form-section"><div class="form-section-title">Photo (Standardisée PDF)</div>
-    <div class="photo-zone" onclick="openImageModal({type:'doc', pid:S.patientId, did:S.docId, label:'Photo Pansement'})">
-      <div class="photo-zone-icon">📸</div><div class="photo-zone-text">Ajouter une photo</div>
-    </div>
-    ${d.pdfId ? `<div style="font-size:11px; color:var(--accent2); text-align:center; margin-top:6px">✓ Document standardisé prêt</div>` : ''}
-  </div>`;
-}
-
-function fLabo(d){
-  return `<div class="form-section"><div class="form-section-title">Labo</div>
-    <div class="field-group">
-      <div class="field-row"><span class="field-label">Laboratoire</span><input class="field-input" id="f-labo" value="${d.laboratoire||''}" oninput="autoSaveForm()"></div>
-    </div>
-  </div>
-  <div class="form-section"><div class="form-section-title">Résultats</div><textarea class="field-textarea" id="f-res" oninput="autoSaveForm()">${d.resultats||''}</textarea></div>
-  <div class="form-section"><div class="form-section-title">Document (PDF)</div>
-    <div class="photo-zone" onclick="openImageModal({type:'doc', pid:S.patientId, did:S.docId, label:'Document Labo'})">
-      <div class="photo-zone-icon">📄</div><div class="photo-zone-text">Scanner le document</div>
-    </div>
-    ${d.pdfId ? `<div style="font-size:11px; color:var(--accent2); text-align:center; margin-top:6px">✓ Document standardisé prêt</div>` : ''}
-  </div>`;
-}
-
-function fConsentement(d,p){
-  return `<div class="form-section"><div class="form-section-title">Acte</div><textarea class="field-textarea" id="f-acte" oninput="autoSaveForm()">${d.acte||''}</textarea></div>
-  <div class="form-section"><div class="form-section-title">Signature (PDF)</div>
-    <div class="photo-zone" onclick="openImageModal({type:'doc', pid:p.id, did:d.id, label:'Signature Consentement'})">
-      <div class="photo-zone-icon">✍️</div><div class="photo-zone-text">Photographier signature</div>
-    </div>
-    ${d.pdfId ? `<div style="font-size:11px; color:var(--accent2); text-align:center; margin-top:6px">✓ Signature enregistrée</div>` : ''}
-  </div>`;
-}
-
-function fOrdonnance(d){
-  if(!d.expiryDate){ const dt=new Date(); dt.setMonth(dt.getMonth()+3); d.expiryDate=dt.toISOString().split('T')[0] }
-  return `<div class="form-section"><div class="form-section-title">Objet & Rappel</div>
-    <div class="field-group">
-      <div class="field-row"><span class="field-label">Titre</span><input class="field-input" id="f-title" value="${d.title||''}" oninput="autoSaveForm()"></div>
-      <div class="field-row"><span class="field-label">Expire le</span><input class="field-input" id="f-expiry" value="${d.expiryDate}" type="date" oninput="autoSaveForm()"></div>
-    </div>
-  </div>
-  <div class="form-section"><div class="form-section-title">Photo (PDF)</div>
-    <div class="photo-zone" onclick="openImageModal({type:'doc', pid:S.patientId, did:S.docId, label:'Photo Ordonnance'})">
-      <div class="photo-zone-icon">💊</div><div class="photo-zone-text">Scanner l'ordonnance</div>
-    </div>
-    ${d.pdfId ? `<div style="font-size:11px; color:var(--accent2); text-align:center; margin-top:6px">✓ Ordonnance standardisée</div>` : ''}
-  </div>
-  <div class="form-section"><div class="form-section-title">Résumé manuel</div><textarea class="field-textarea" id="f-medocs" oninput="autoSaveForm()">${d.medicaments||''}</textarea></div>`;
-}
-
-function fCR(d){
-  return `<div class="form-section"><div class="form-section-title">Contenu</div><textarea class="field-textarea" id="f-cr" oninput="autoSaveForm()">${d.texte||''}</textarea></div>
-  <div class="form-section"><div class="form-section-title">Scan (PDF)</div>
-    <div class="photo-zone" onclick="openImageModal({type:'doc', pid:S.patientId, did:S.docId, label:'Scan Compte-Rendu'})">
-      <div class="photo-zone-icon">📋</div><div class="photo-zone-text">Scanner le compte-rendu</div>
-    </div>
-    ${d.pdfId ? `<div style="font-size:11px; color:var(--accent2); text-align:center; margin-top:6px">✓ Scan prêt</div>` : ''}
-  </div>`;
-}
-
-function openPdf(pid, did){
-  const p=P(pid); const d=p.docs.find(x=>x.id==did);
-  const cont=document.getElementById('pdf-content');
-  let html = `
-    <div class="pdf-header"><div class="pdf-title">${d.label}</div><div class="pdf-subtitle">Dossier Médical Partagé</div><div class="pdf-patient">${p.prenom} ${p.nom.toUpperCase()}</div></div>
-    <div style="margin-bottom:20px; font-size:13px"><strong>Date :</strong> ${fdt(d.datetime)}<br><strong>Médecin :</strong> ${p.medecin}<br><strong>Auteur :</strong> ${d.user || S.currentUser}</div>`;
-
-  if(d.type==='tension'){
-    html += `<table class="pdf-table"><thead><tr><th>Date</th><th>Heure</th><th>Sys</th><th>Dia</th><th>Pouls</th><th>Auteur</th></tr></thead><tbody>
-      ${d.entries.map(e=>`<tr><td>${e.date}</td><td>${e.heure}</td><td><strong>${e.sys}</strong></td><td><strong>${e.dia}</strong></td><td>${e.pouls}</td><td style="font-size:9px">${e.user || d.user || '?'}</td></tr>${e.comment?`<tr><td colspan="6" class="comment">↳ ${e.comment}</td></tr>`:''}`).join('')}
-    </tbody></table>`;
-  } else if(d.type==='glycemie'){
-    html += `<table class="pdf-table"><thead><tr><th>Date</th><th>Heure</th><th>Av.</th><th>Ap.</th><th>Auteur</th></tr></thead><tbody>
-      ${d.entries.map(e=>`<tr><td>${e.date}</td><td>${e.heure}</td><td>${e.avant}</td><td>${e.apres}</td><td style="font-size:9px">${e.user || d.user || '?'}</td></tr>`).join('')}
-    </tbody></table>`;
-  } else if(d.type==='ordonnance'){
-    html += `<div style="font-size:13px"><p><strong>Titre :</strong> ${d.title || '/'}</p><p><strong>Valable jusqu'au :</strong> ${fd(d.expiryDate)}</p>
-    <div style="margin-top:15px; padding:15px; border:1px solid #eee; background:#fafafa; border-radius:8px"><strong>Résumé :</strong><br>${(d.medicaments||'').replace(/\n/g,'<br>')}</div></div>`;
-  } else if(d.type==='labo'){
-    html += `<div style="font-size:13px"><p><strong>Laboratoire :</strong> ${d.laboratoire||'/'}</p><div style="margin-top:15px; padding:15px; border:1px solid #eee; background:#fafafa; border-radius:8px"><strong>Résultats :</strong><br>${(d.resultats||'').replace(/\n/g,'<br>')}</div></div>`;
-  }
-  html += `<div class="pdf-footer">Document confidentiel</div>`;
-  cont.innerHTML = html;
-  document.getElementById('pdf-overlay').classList.add('open');
-}
-
-function closePdf(){ document.getElementById('pdf-overlay').classList.remove('open') }
-
-function downloadPdf(){
-  const p=P(S.patientId); const d=p.docs.find(x=>x.id==S.docId);
-  const opt={ margin:10, filename:`Soins_${p.nom}_${d.label}.pdf`, image:{type:'jpeg',quality:0.98}, html2canvas:{scale:2}, jsPDF:{unit:'mm',format:'a4'} };
-  html2pdf().set(opt).from(document.getElementById('pdf-content')).save();
-  toast('💾 Téléchargement lancé');
-}
-
-function renderOrdonnancier(){
-  const ordos=[]; S.patients.forEach(p=>{ p.docs.filter(d=>d.type==='ordonnance').forEach(o=>ordos.push({p,o})) });
-  ordos.sort((a,b)=>new Date(b.o.datetime)-new Date(a.o.datetime));
-  return `
-  <div class="topbar"><button class="topbar-back tbtn ghost" onclick="go('home')">←</button><div class="topbar-center"><div class="topbar-title">Ordonnancier</div></div><div class="topbar-placeholder"></div></div>
-  <div class="content anim">
-    <div class="section-label">${ordos.length} ordonnance(s)</div>
-    <div class="patient-list">
-      ${ordos.map(i=>{
-        const diff=Math.ceil((new Date(i.o.expiryDate).getTime()-new Date().getTime())/(86400000));
-        const exp=diff<0;
-        return `<div class="patient-card" style="border-left:3px solid ${exp?'var(--red)':diff<=20?'var(--amber)':'transparent'}" onclick="openF(${i.p.id},${i.o.id})">
-          <div class="patient-avatar" style="background:var(--bg3);color:var(--text2)">💊</div>
-          <div class="patient-info"><div class="patient-name">${i.o.title||'Sans titre'}</div><div class="patient-meta" style="color:var(--accent2)">${i.p.prenom} ${i.p.nom}</div></div>
-          <div style="font-size:10px;text-align:right"><div style="color:${exp?'var(--red)':'var(--text3)'};font-weight:${exp?700:400}">${exp?'🔴 EXPIRÉ':fd(i.o.expiryDate)}</div>${!exp&&diff<=20?`<div style="color:var(--amber);font-weight:600">🟠 J-${diff}</div>`:''}</div>
-        </div>`}).join('')}
-    </div>
-  </div>`;
-}
-
-function renderData(){
-  const ts=new Date().toLocaleString('fr-FR');
-  return `
-  <div class="topbar"><button class="topbar-back tbtn ghost" onclick="go('home')">←</button><div class="topbar-center"><div class="topbar-title">Données</div></div><div class="topbar-placeholder"></div></div>
-  <div class="content anim">
-    <div class="data-panel"><h3>👤 Profil</h3><p>Connectée : <strong>${S.currentUser}</strong></p><button class="data-btn" style="background:var(--bg3)" onclick="go('login')">🔄 Changer</button></div>
-    <div class="data-panel"><h3>📤 Export</h3><p>Sauvegarde globale sécurisée.</p><button class="data-btn export-btn" onclick="exportData()"><span class="data-btn-icon">⬇️</span><strong>Exporter tout</strong></button></div>
-    <div class="data-panel"><h3>📥 Import</h3><button class="data-btn import-btn" onclick="importDataMerge()"><span class="data-btn-icon">⬆️</span><strong>Fusionner</strong></button></div>
-    <div class="data-panel"><h3>🗑 Réinitialiser</h3><button class="data-btn danger-btn" onclick="confirmReset()"><span class="data-btn-icon">⚠️</span><strong>Tout effacer</strong></button></div>
-  </div>`;
+  return `<div class="mt-row mt-glyc" style="position:relative"><div class="mt-cell"><input data-t="date" data-i="${i}" value="${toIso(e.date)}" type="date" oninput="autoSaveForm()" style="width:100%; font-size:10px"></div><div class="mt-cell"><input data-t="heure" data-i="${i}" value="${e.heure||''}" type="time" oninput="autoSaveForm()"></div><div class="mt-cell"><input data-t="avant" data-i="${i}" value="${e.avant||''}" type="number" step="0.01" oninput="autoSaveForm()"></div><div class="mt-cell"><input data-t="apres" data-i="${i}" value="${e.apres||''}" type="number" step="0.01" oninput="autoSaveForm()"></div><div class="trace-user" style="position:absolute;bottom:2px;right:5px">${e.user || S.currentUser}</div></div>`;
 }
 
 async function saveForm(silent=false){
   const p=P(S.patientId); const d=p.docs.find(x=>x.id==S.docId); if(!d)return;
   const dt=document.getElementById('doc-dt'); if(dt)d.datetime=dt.value;
   if(d.type==='tension'||d.type==='glycemie'){
-    const rows=collectRows(); Object.keys(rows).forEach(i=>{ if(d.entries[i]) Object.assign(d.entries[i],rows[i]); else {d.entries[i]=rows[i]; d.entries[i].user=S.currentUser} });
+    const rows=collectRows(); 
+    const entries = [];
+    Object.keys(rows).forEach(i=>{ 
+      const row = rows[i];
+      if(d.entries[i]) row.user = d.entries[i].user || S.currentUser;
+      else row.user = S.currentUser;
+      entries.push(row);
+    });
+    // Tri chronologique
+    entries.sort((a,b) => {
+      const da = toIso(a.date) + 'T' + (a.heure||'00:00');
+      const db = toIso(b.date) + 'T' + (b.heure||'00:00');
+      return da.localeCompare(db);
+    });
+    d.entries = entries;
     if(d.type==='tension'){const o=document.getElementById('obs-t'); if(o)d.obs=o.value}
-    else { ['ins-type','ins-mat','ins-soir'].forEach(id=>{const el=document.getElementById(id); if(el)d[id.replace('ins-','ins')]=el.value}) }
-  } else if(d.type==='pansement'){ ['f-loc','f-taille','f-aspect','f-trait'].forEach(id=>{const el=document.getElementById(id); if(el)d[id.replace('f-','localisation').replace('taille','taille').replace('aspect','aspect').replace('trait','traitement')]=el.value})
-  } else if(d.type==='labo'){ ['f-labo','f-res'].forEach(id=>{const el=document.getElementById(id); if(el)d[id.replace('f-','').replace('labo','laboratoire').replace('res','resultats')]=el.value})
+    else {['ins-type','ins-mat','ins-soir'].forEach(id=>{const el=document.getElementById(id); if(el)d[id.replace('ins-','ins')]=el.value})}
+  } else if(d.type==='pansement'){['f-loc','f-taille'].forEach(id=>{const el=document.getElementById(id); if(el)d[id.replace('f-','').replace('loc','localisation')]=el.value}); const a=document.getElementById('f-aspect'); if(a)d.aspect=a.value;
+  } else if(d.type==='labo'){['f-labo','f-res'].forEach(id=>{const el=document.getElementById(id); if(el)d[id.replace('f-','').replace('labo','laboratoire').replace('res','resultats')]=el.value})
   } else if(d.type==='consentement'){const fa=document.getElementById('f-acte'); if(fa)d.acte=fa.value;
-  } else if(d.type==='ordonnance'){ ['f-title','f-expiry','f-medocs'].forEach(id=>{const el=document.getElementById(id); if(el)d[id.replace('f-','').replace('title','title').replace('expiry','expiryDate').replace('medocs','medicaments')]=el.value})
+  } else if(d.type==='ordonnance'){['f-title','f-expiry','f-medocs'].forEach(id=>{const el=document.getElementById(id); if(el)d[id.replace('f-','').replace('title','title').replace('expiry','expiryDate').replace('medocs','medicaments')]=el.value})
   } else if(d.type==='cr'){const ft=document.getElementById('f-cr'); if(ft)d.texte=ft.value}
-  await save(); if(!silent){ toast('✓ Enregistré'); setTimeout(()=>{go('dossier')},600) }
+  await save(); if(!silent){ toast('✓ Enregistré'); setTimeout(()=>go('dossier'),600) }
 }
 
-function collectRows(){ const rows={}; document.querySelectorAll('[data-t]').forEach(inp=>{ const i=parseInt(inp.dataset.i),t=inp.dataset.t; if(!rows[i])rows[i]={}; rows[i][t]=inp.value }); return rows }
-function addTRow(){ const p=P(S.patientId); const d=p.docs.find(x=>x.id==S.docId); const rows=collectRows(); Object.keys(rows).forEach(i=>{if(d.entries[i])Object.assign(d.entries[i],rows[i])}); d.entries.push({date:todayFr(),heure:nowTime(),sys:'',dia:'',pouls:'',comment:'',user:S.currentUser}); save(); const container=document.getElementById('tension-rows'); if(container){const i=d.entries.length-1; container.insertAdjacentHTML('beforeend',tensionRowHTML(d.entries[i],i))} }
-function addGRow(){ const p=P(S.patientId); const d=p.docs.find(x=>x.id==S.docId); const rows=collectRows(); Object.keys(rows).forEach(i=>{if(d.entries[i])Object.assign(d.entries[i],rows[i])}); d.entries.push({date:todayFr(),heure:'',avant:'',apres:'',user:S.currentUser}); save(); const container=document.getElementById('glyc-rows'); if(container){const i=d.entries.length-1; container.insertAdjacentHTML('beforeend',glycRowHTML(d.entries[i],i))} }
+function collectRows(){ 
+  const rows={}; 
+  document.querySelectorAll('[data-t]').forEach(inp=>{ 
+    const i=parseInt(inp.dataset.i),t=inp.dataset.t; 
+    if(!rows[i])rows[i]={}; 
+    rows[i][t]=t==='date'?toFr(inp.value):inp.value 
+  }); 
+  return rows 
+}
+
+function addTRow(){ 
+  saveForm(true);
+  const p=P(S.patientId); const d=p.docs.find(x=>x.id==S.docId);
+  d.entries.push({date:todayFr(),heure:nowTime(),sys:'',dia:'',pouls:'',comment:'',user:S.currentUser});
+  render();
+}
+
+function addGRow(){ 
+  saveForm(true);
+  const p=P(S.patientId); const d=p.docs.find(x=>x.id==S.docId);
+  d.entries.push({date:todayFr(),heure:'',avant:'',apres:'',user:S.currentUser});
+  render();
+}
 function autoSaveForm(){ saveForm(true) }
 
 function exportData(){ const blob=new Blob([JSON.stringify({v:VERSION,data:S.patients},null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`Soins_Export_${todayStr()}.soins`; a.click(); toast('✅ Export terminé') }
-function importDataMerge(){ const inp=document.createElement('input'); inp.type='file'; inp.accept='.soins,.json'; inp.onchange=()=>{ if(!inp.files[0])return; const r=new FileReader(); r.onload=async e=>{ try{ const data=JSON.parse(e.target.result); const toImp=data.data||data; for(let i of toImp){ const ex=S.patients.some(p=>p.nom===i.nom&&p.prenom===i.prenom); if(!ex){ i.id=Date.now()+Math.random(); S.patients.push(i); await dbSave('patients',i) } } render(); toast('✅ Fusion terminée') }catch(e){toast('❌ Fichier invalide')} }; r.readAsText(inp.files[0]) }; inp.click() }
-function confirmReset(){ showConfirm('⚠️ Tout effacer','Action irréversible.','Confirmer',()=>{ S.patients=[]; const tx=db.transaction(['patients','files'],'readwrite'); tx.objectStore('patients').clear(); tx.objectStore('files').clear(); location.reload() }) }
+function importDataMerge(){ const inp=document.createElement('input'); inp.type='file'; inp.accept='.soins,.json'; inp.onchange=()=>{ if(!inp.files[0])return; const r=new FileReader(); r.onload=async e=>{ try{ const data=JSON.parse(e.target.result); const toImp=data.data||data; for(let i of toImp){ if(!S.patients.some(p=>p.nom===i.nom&&p.prenom===i.prenom)){ i.id=Date.now()+Math.random(); S.patients.push(i); await dbSave('patients',i) } } render(); toast('✅ Fusionnée') }catch(e){toast('❌ Invalide')} }; r.readAsText(inp.files[0]) }; inp.click() }
+function confirmReset(){ showConfirm('⚠️ Tout effacer','Action irréversible.','Confirmer',()=>{ S.patients=[]; const tx=db.transaction(['patients','files','config'],'readwrite'); tx.objectStore('patients').clear(); tx.objectStore('files').clear(); tx.objectStore('config').clear(); location.reload() }) }
 
 function go(p){S.page=p;render();window.scrollTo(0,0)}
 function openD(id){S.patientId=id;S.page='dossier';render()}
 function openF(pid,did){S.patientId=pid;S.docId=did;S.page='form';render()}
 function toggleVu(pid){ const p=P(pid); if(!p)return; if(!p.seenDates)p.seenDates=[]; const ts=todayStr(); const idx=p.seenDates.indexOf(ts); if(idx>=0)p.seenDates.splice(idx,1); else p.seenDates.push(ts); save(); render() }
 
-// Init
+function openPModal(pid=null){ S.editPid=pid; const p=pid?P(pid):null; document.getElementById('mp-title').textContent=pid?'✏️ Modifier patient':'➕ Nouveau patient'; document.getElementById('mp-btn').textContent=pid?'Enregistrer':'Créer'; const sel=document.getElementById('np-couple'); sel.innerHTML='<option value="">-- Aucun --</option>'+S.patients.filter(x=>x.id!==pid).map(x=>`<option value="${x.id}" ${p&&p.coupleWith==x.id?'selected':''}>${x.prenom} ${x.nom}</option>`).join(''); ['prenom','nom','ddn','medecin','adresse','notes','urgent','status'].forEach(id=>{ const el=document.getElementById('np-'+id); if(el) el.value=p?p[id]||'':(id==='status'?'active':''); }); document.getElementById('modal-patient').classList.add('open'); toggleCoupleNote(); }
+function closePModal(){ document.getElementById('modal-patient').classList.remove('open') }
+async function savePatientModal(){
+  const data={}; ['prenom','nom','ddn','medecin','adresse','notes','urgent','status','couple'].forEach(id=>{ const el=document.getElementById('np-'+id); if(el) data[id]=el.value; });
+  if(!data.prenom || !data.nom) return toast('⚠️ Prénom et Nom requis');
+  if(S.editPid){ const p=P(S.editPid); Object.assign(p, data); p.coupleWith = data.couple ? parseInt(data.couple) : null; }
+  else { const newP={id:Date.now(),...data,color:COLORS[Math.floor(Math.random()*COLORS.length)],coupleWith:data.couple?parseInt(data.couple):null,seenDates:[],docs:[],contacts:[],idDocs:{}}; S.patients.push(newP); await dbSave('patients', newP); }
+  if(data.couple){ const partner=P(parseInt(data.couple)); if(partner) partner.coupleWith=S.editPid||S.patients[S.patients.length-1].id; }
+  await save(); closePModal(); render(); toast(S.editPid?'✓ Modifié':'✓ Créé');
+}
+function toggleCoupleNote(){ const val=document.getElementById('np-couple').value; document.getElementById('couple-note').style.display=val?'block':'none'; }
+function openCModal(pid){ S.contactPid=pid; ['nom','role','tel','mail'].forEach(id=>{document.getElementById('c-'+id).value='';}); document.getElementById('modal-contact').classList.add('open'); }
+function closeCModal(){ document.getElementById('modal-contact').classList.remove('open') }
+async function saveContactModal(){
+  const p=P(S.contactPid); if(!p)return; const c={id:Date.now(),user:S.currentUser}; ['nom','role','tel','mail'].forEach(id=>{c[id]=document.getElementById('c-'+id).value;});
+  if(!c.nom) return toast('⚠️ Nom requis'); if(!p.contacts) p.contacts=[]; p.contacts.push(c);
+  await save(); closeCModal(); render(); toast('👤 Ajouté');
+}
+function delContact(pid, cid){ showConfirm('Supprimer contact','Supprimer ce contact ?','Supprimer',()=>{ const p=P(pid); if(!p)return; p.contacts=p.contacts.filter(c=>c.id!==cid); save(); render(); toast('🗑 Supprimé'); }); }
+function confirmDel(pid){ showConfirm('Supprimer dossier','Action irréversible.','Supprimer',()=>{ S.patients.forEach(p=>{ if(p.coupleWith===pid) p.coupleWith=null; }); S.patients=S.patients.filter(p=>p.id!==pid); dbDelete('patients', pid); go('home'); toast('🗑 Supprimé'); }); }
+
+document.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) { if (e.target.id === 'modal-pin') return; e.target.classList.remove('open'); _imgTarget = null; } });
+async function createDoc(type){
+  const p=P(S.patientId); if(!p)return;
+  const labels={tension:'Fiche tension',glycemie:'Fiche glycémie',pansement:'Pansement',labo:'Labo',consentement:'Consentement',ordonnance:'Ordonnance',cr:'CR'};
+  const icons={tension:'🩺',glycemie:'🩸',pansement:'🩹',labo:'🧪',consentement:'✍️',ordonnance:'💊',cr:'📋'};
+  const newDoc={id:Date.now(),type,label:labels[type]||'Document',icon:icons[type]||'📄',datetime:now(),user:S.currentUser,entries:[]};
+  p.docs.push(newDoc); await save(); openF(p.id, newDoc.id);
+}
+
 startApp();
 </script>
 </body>
