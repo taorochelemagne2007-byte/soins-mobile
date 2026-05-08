@@ -1,6 +1,6 @@
-const CACHE_NAME = 'soins-mobile-v3';
+const CACHE_NAME = 'soins-mobile-v4';
 const ASSETS = [
-  './PWA.html',
+  './index.html',
   './manifest.json',
   './logo.png',
   'https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap',
@@ -17,4 +17,4 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.match(e.request).then((res) => res || fetch(e.request))
   );
-});
+}););

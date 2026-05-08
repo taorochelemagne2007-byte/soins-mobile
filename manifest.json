@@ -1,7 +1,7 @@
 {
   "name": "Soins Infirmiers",
   "short_name": "Soins",
-  "start_url": "./PWA.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f1923",
   "theme_color": "#1a9e7e",
