@@ -12,7 +12,8 @@ const ui = {
     if(!el) return;
     if(id==='modal-patient') {
       const p = state.activePid ? utils.p(state.activePid) : null;
-      document.getElementById('mp-title').textContent = p ? 'Modifier Patient' : 'Nouveau Patient';
+      const mpTitle = document.getElementById('mp-title');
+      if(mpTitle) mpTitle.textContent = p ? 'Modifier Patient' : 'Nouveau Patient';
       ['prenom','nom','ddn','medecin','adresse','notes','urgent','status'].forEach(k => {
         const input = document.getElementById('np-'+k);
         if(input) input.value = p ? p[k]||'' : (k==='status'?'active':'');
@@ -164,7 +165,7 @@ const ui = {
   },
 
   vModeles() {
-    const ms = [{t:'tension',i:'🩺',l:'Tension'},{t:'glycemie',i:'🩸',l:'Glycémie'},{t:'pansement',i:'🩹',l:'Pansement'},{t:'labo',i:'🧪',l:'Labo'},{t:'ordonnance',i:'💊',l:'Ordonnance'},{t:'cr',i:'📋',l:'CR'}];
+    const ms = [{t:'tension',i:'🩺',l:'Tension'},{t:'glycemie',i:'🩸',l:'Glycémie'},{t:'pansement',i:'🩹',l:'Pansement'},{t:'labo',i:'🧪',l:'Labo'},{t:'ordonnance',i:'💊',l:'Ordonnance'},{t:'consentement',i:'✍️',l:'Consentement'}];
     return `<div class="topbar"><button class="tbtn" onclick="ui.go('dossier',state.activePid)">←</button><div class="topbar-title">Nouveau document</div><div style="width:36px"></div></div>
     <div class="content anim"><div class="patient-list">${ms.map(m => `<div class="patient-card" onclick="core.createDoc('${m.t}')"><span style="font-size:24px;margin-right:10px">${m.i}</span><b>${m.l}</b></div>`).join('')}</div></div>`;
   },
@@ -174,10 +175,18 @@ const ui = {
     const d = p ? p.docs.find(x => x.id == state.activeDid) : null;
     if(!p || !d) return `<div style="padding:40px; text-align:center; color:white;"><h2>Document introuvable</h2><button class="modal-btn" onclick="ui.go('home')">Retour</button></div>`;
     
-    return `<div class="topbar"><button class="tbtn" onclick="ui.go('dossier',${p.id})">←</button><div class="topbar-title">${d.label}</div><button class="tbtn" onclick="ui.toast('PDF... bientôt')">📄</button></div>
+    let content = '';
+    if(d.type==='tension') content = this.fTension(d);
+    else if(d.type==='glycemie') content = this.fGlycemie(d);
+    else if(d.type==='ordonnance') content = this.fOrdonnance(d);
+    else if(d.type==='labo') content = this.fLabo(d);
+    else if(d.type==='consentement') content = this.fConsentement(d);
+    else content = `<textarea class="modal-input" id="obs" style="min-height:200px" oninput="ui.autoSave()">${d.obs||''}</textarea>`;
+
+    return `<div class="topbar"><button class="tbtn" onclick="ui.go('dossier',${p.id})">←</button><div class="topbar-title">${d.label}</div><button class="tbtn" onclick="ui.exportPdf()">📄</button></div>
     <div class="content anim">
       <input type="datetime-local" id="doc-dt" value="${d.datetime}" class="modal-input" style="margin-bottom:20px" oninput="ui.autoSave()">
-      ${d.type==='tension'?this.fTension(d):d.type==='glycemie'?this.fGlycemie(d):`<textarea class="modal-input" id="obs" style="min-height:200px" oninput="ui.autoSave()">${d.obs||''}</textarea>`}
+      ${content}
       <button class="modal-btn" onclick="ui.go('dossier',${p.id})">💾 Enregistrer & Fermer</button>
     </div>`;
   },
@@ -196,6 +205,27 @@ const ui = {
     <div class="content anim"><button class="modal-btn" onclick="auth.setPin()">🔑 Code PIN</button><button class="modal-btn" onclick="state.page='login';ui.render()" style="margin-top:10px;background:var(--bg3)">🔄 Profil (${state.currentUser})</button><button class="modal-btn" style="margin-top:40px;background:var(--red)" onclick="ui.reset()">⚠️ Reset complet</button></div>`;
   },
 
+  exportPdf() {
+    const p = utils.p(state.activePid);
+    const d = p.docs.find(x => x.id == state.activeDid);
+    const div = document.createElement('div');
+    div.innerHTML = `<div style="padding:40px; font-family:sans-serif; background:white; color:black;">
+      <h1 style="color:#1a9e7e">${d.label}</h1>
+      <p><b>Patient:</b> ${p.prenom} ${p.nom}</p>
+      <p><b>Date:</b> ${new Date(d.datetime).toLocaleString()}</p>
+      <hr>
+      <div style="margin-top:20px">${document.querySelector('.content').innerHTML}</div>
+    </div>`;
+    div.querySelectorAll('button, input[type="file"], .doc-card').forEach(el => el.remove());
+    // Convertir les inputs en texte pour le PDF
+    div.querySelectorAll('input').forEach(i => {
+      const span = document.createElement('span');
+      span.textContent = i.value;
+      i.parentNode.replaceChild(span, i);
+    });
+    html2pdf().from(div).set({margin:10, filename: `${p.nom}_${d.label}.pdf`}).save();
+  },
+
   addRow() { 
     const p=utils.p(state.activePid); 
     const d=p ? p.docs.find(x=>x.id==state.activeDid) : null; 
@@ -206,24 +236,7 @@ const ui = {
   },
 
   autoSave() {
-    const p=utils.p(state.activePid); 
-    const d=p ? p.docs.find(x=>x.id==state.activeDid) : null; 
-    if(!d) return;
-    const dtInput = document.getElementById('doc-dt');
-    if(dtInput) d.datetime = dtInput.value;
-    if(d.type==='tension'||d.type==='glycemie') {
-      const rows={}; 
-      document.querySelectorAll('[data-t]').forEach(el=>{ 
-        const i=el.dataset.i, t=el.dataset.t; 
-        if(!rows[i])rows[i]={}; 
-        rows[i][t]=el.value; 
-      });
-      d.entries = Object.values(rows).sort((a,b)=>(a.date+a.heure).localeCompare(b.date+b.heure));
-    } else { 
-      const o=document.getElementById('obs'); 
-      if(o) d.obs=o.value; 
-    }
-    db.save('patients', p);
+    core.autoSave();
   },
 
   reset() { if(confirm('TOUT EFFACER ?')) { indexedDB.deleteDatabase(DB_NAME); location.reload(); } }

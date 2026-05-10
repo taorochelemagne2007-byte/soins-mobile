@@ -13,7 +13,7 @@ const core = {
       ui.render();
     } catch(e) { 
       console.error('Boot error:', e);
-      document.body.innerHTML = '<div style="color:white;padding:40px;text-align:center"><h2>Erreur Stockage</h2><button class="modal-btn" onclick="location.reload()">Réessayer</button></div>'; 
+      document.body.innerHTML = `<div style="color:white;padding:40px;text-align:center"><h2>Erreur Stockage</h2><p>${e.message}</p><button class="modal-btn" onclick="location.reload()">Réessayer</button></div>`; 
     }
   },
 
@@ -50,8 +50,8 @@ const core = {
   async createDoc(t) {
     const p = utils.p(state.activePid);
     if(!p) return ui.toast('❌ Aucun patient sélectionné');
-    const labels = {tension:'Tension',glycemie:'Glycémie',pansement:'Pansement',labo:'Labo',ordonnance:'Ordonnance',cr:'CR'};
-    const icons = {tension:'🩺',glycemie:'🩸',pansement:'🩹',labo:'🧪',ordonnance:'💊',cr:'📋'};
+    const labels = {tension:'Tension',glycemie:'Glycémie',pansement:'Pansement',labo:'Labo',ordonnance:'Ordonnance',consentement:'Consentement'};
+    const icons = {tension:'🩺',glycemie:'🩸',pansement:'🩹',labo:'🧪',ordonnance:'💊',consentement:'✍️'};
     const n = { id: Date.now(), type: t, label: labels[t]||'Doc', icon: icons[t]||'📄', datetime: utils.now(), entries: [] };
     if(!p.docs) p.docs = [];
     p.docs.push(n);
@@ -61,22 +61,26 @@ const core = {
 
   async handleIdClick(k) {
     const p = utils.p(state.activePid);
-    if(!p) return ui.toast('❌ Sélectionnez un patient');
-    let img = (p.idDocs && p.idDocs[k]) ? p.idDocs[k] : null;
-    if(img) {
-      if(img.startsWith('id_')) {
-        const data = await db.get('files', img);
-        if(data) img = URL.createObjectURL(data.blob);
-        else return ui.toast('❌ Image introuvable');
-      }
-      this.openViewer(img, k);
+    const d = p.docs ? p.docs.find(x => x.id == state.activeDid) : null;
+    
+    // On vérifie d'abord si l'image est dans le document ou dans le dossier patient
+    let imgId = null;
+    if(d && d.idDocs && d.idDocs[k]) imgId = d.idDocs[k];
+    else if(p.idDocs && p.idDocs[k]) imgId = p.idDocs[k];
+
+    if(imgId) {
+      const data = await db.get('files', imgId);
+      if(data) {
+        const src = URL.createObjectURL(data.blob);
+        this.openViewer(src, k);
+      } else return ui.toast('❌ Image introuvable');
     } else {
-      this.openImageModal(k);
+      this.openImageModal(k, !!d);
     }
   },
 
-  openImageModal(k) {
-    state._imgTarget = { type: 'id', key: k };
+  openImageModal(k, isDoc = false) {
+    state._imgTarget = { type: isDoc ? 'doc' : 'id', key: k };
     ui.openModal('modal-image');
   },
 
@@ -94,8 +98,16 @@ const core = {
     const id = 'id_' + Date.now();
     await db.save('files', { id, blob: file });
     const p = utils.p(state.activePid);
-    if(!p.idDocs) p.idDocs = {};
-    p.idDocs[state._imgTarget.key] = id;
+    
+    if(state._imgTarget.type === 'id') {
+      if(!p.idDocs) p.idDocs = {};
+      p.idDocs[state._imgTarget.key] = id;
+    } else if(state._imgTarget.type === 'doc') {
+      const d = p.docs.find(x => x.id == state.activeDid);
+      if(!d.idDocs) d.idDocs = {};
+      d.idDocs[state._imgTarget.key] = id;
+    }
+    
     await db.save('patients', p);
     ui.closeModal('modal-image');
     ui.render();
@@ -123,5 +135,34 @@ const core = {
     if(!p) return;
     p.contacts = p.contacts.filter(x => x.id !== cid);
     await db.save('patients', p); ui.render();
+  },
+
+  async autoSave() {
+    const p = utils.p(state.activePid); 
+    const d = p ? p.docs.find(x => x.id == state.activeDid) : null; 
+    if(!d) return;
+    
+    const dtInput = document.getElementById('doc-dt');
+    if(dtInput) d.datetime = dtInput.value;
+
+    const fTitle = document.getElementById('f-title'); if(fTitle) d.title = fTitle.value;
+    const fMed = document.getElementById('f-med'); if(fMed) d.medecin = fMed.value;
+    const fExp = document.getElementById('f-exp'); if(fExp) d.expiry = fExp.value;
+    const fKIn = document.getElementById('f-key-in'); if(fKIn) d.keyIn = fKIn.value;
+    const fKOut = document.getElementById('f-key-out'); if(fKOut) d.keyOut = fKOut.value;
+
+    if(d.type==='tension'||d.type==='glycemie') {
+      const rows={}; 
+      document.querySelectorAll('[data-t]').forEach(el=>{ 
+        const i=el.dataset.i, t=el.dataset.t; 
+        if(!rows[i])rows[i]={}; 
+        rows[i][t]=el.value; 
+      });
+      d.entries = Object.values(rows).sort((a,b)=>(a.date+a.heure).localeCompare(b.date+b.heure));
+    } else { 
+      const o=document.getElementById('obs'); 
+      if(o) d.obs=o.value; 
+    }
+    await db.save('patients', p);
   }
 };

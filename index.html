@@ -82,11 +82,14 @@ if ('serviceWorker' in navigator) {
 <!-- IMAGE MODAL -->
 <div class="modal-overlay" id="modal-image">
   <div class="modal">
-    <div class="modal-title">Ajouter une Photo</div>
-    <p style="font-size:12px; color:var(--text2); margin-bottom:20px">Prenez une photo du document (Carte Vitale, Mutuelle, etc.)</p>
-    <input type="file" id="img-input" accept="image/*" capture="environment" style="display:none" onchange="core.saveImage(event)">
-    <button class="modal-btn" onclick="document.getElementById('img-input').click()">📸 Prendre une photo</button>
-    <button class="modal-btn" onclick="ui.closeModal('modal-image')" style="background:transparent;color:var(--text3)">Annuler</button>
+    <div class="modal-title">Ajouter un document</div>
+    <p style="font-size:12px; color:var(--text2); margin-bottom:20px">Choisissez la source du document</p>
+    <input type="file" id="img-camera" accept="image/*" capture="environment" style="display:none" onchange="core.saveImage(event)">
+    <input type="file" id="img-galerie" accept="image/*" style="display:none" onchange="core.saveImage(event)">
+    
+    <button class="modal-btn" onclick="document.getElementById('img-camera').click()">📸 Prendre une photo</button>
+    <button class="modal-btn" style="background:var(--bg3); margin-top:10px" onclick="document.getElementById('img-galerie').click()">🖼️ Choisir depuis la galerie</button>
+    <button class="modal-btn" onclick="ui.closeModal('modal-image')" style="background:transparent; color:var(--text3); margin-top:20px">Annuler</button>
   </div>
 </div>
 
