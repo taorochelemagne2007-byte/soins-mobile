@@ -1,29 +1,66 @@
-// UI
+// UI - Sécurisé
 const ui = {
-  toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); },
+  toast(m) { 
+    const t=document.getElementById('toast'); 
+    if(!t) return;
+    t.textContent=m; t.classList.add('show'); 
+    setTimeout(()=>t.classList.remove('show'),2500); 
+  },
+
   openModal(id) { 
+    const el = document.getElementById(id);
+    if(!el) return;
     if(id==='modal-patient') {
       const p = state.activePid ? utils.p(state.activePid) : null;
       document.getElementById('mp-title').textContent = p ? 'Modifier Patient' : 'Nouveau Patient';
-      ['prenom','nom','ddn','medecin','adresse','notes','urgent','status'].forEach(k => document.getElementById('np-'+k).value = p?p[k]||'':(k==='status'?'active':''));
+      ['prenom','nom','ddn','medecin','adresse','notes','urgent','status'].forEach(k => {
+        const input = document.getElementById('np-'+k);
+        if(input) input.value = p ? p[k]||'' : (k==='status'?'active':'');
+      });
       const sel = document.getElementById('np-couple');
-      sel.innerHTML = '<option value="">-- Aucun --</option>' + state.patients.filter(x=>x.id!==state.activePid).map(x=>`<option value="${x.id}" ${p&&p.coupleWith==x.id?'selected':''}>${x.prenom} ${x.nom}</option>`).join('');
+      if(sel) sel.innerHTML = '<option value="">-- Aucun --</option>' + state.patients.filter(x=>x.id!==state.activePid).map(x=>`<option value="${x.id}" ${p&&p.coupleWith==x.id?'selected':''}>${x.prenom} ${x.nom}</option>`).join('');
     }
-    document.getElementById(id).classList.add('open'); 
+    el.classList.add('open'); 
   },
-  closeModal(id) { document.getElementById(id).classList.remove('open'); },
-  go(p, pid=null, did=null) { state.page=p; state.activePid=pid; state.activeDid=did; this.render(); window.scrollTo(0,0); },
+
+  closeModal(id) { 
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('open'); 
+  },
+
+  go(p, pid, did) { 
+    state.page = p; 
+    if(pid !== undefined && pid !== null) state.activePid = pid; 
+    if(did !== undefined && did !== null) state.activeDid = did; 
+    this.render(); 
+    window.scrollTo(0,0); 
+  },
 
   render() {
     const a = document.getElementById('app');
-    if(state.page==='auth') a.innerHTML = this.vAuth();
-    else if(state.page==='login') a.innerHTML = this.vLogin();
-    else if(state.page==='home') a.innerHTML = this.vHome();
-    else if(state.page==='dossier') a.innerHTML = this.vDossier();
-    else if(state.page==='form') a.innerHTML = this.vForm();
-    else if(state.page==='modeles') a.innerHTML = this.vModeles();
-    else if(state.page==='data') a.innerHTML = this.vData();
-    else if(state.page==='ordonnancier') a.innerHTML = this.vOrdonnancier();
+    if(!a) return;
+    try {
+      let html = '';
+      switch(state.page) {
+        case 'auth': html = this.vAuth(); break;
+        case 'login': html = this.vLogin(); break;
+        case 'home': html = this.vHome(); break;
+        case 'dossier': html = this.vDossier(); break;
+        case 'form': html = this.vForm(); break;
+        case 'modeles': html = this.vModeles(); break;
+        case 'data': html = this.vData(); break;
+        case 'ordonnancier': html = this.vOrdonnancier(); break;
+        default: html = this.vHome();
+      }
+      a.innerHTML = html;
+    } catch(e) {
+      console.error('Render error:', e);
+      a.innerHTML = `<div style="padding:40px; text-align:center; color:white;">
+        <h2>⚠️ Erreur d'affichage</h2>
+        <p style="font-size:12px; margin:20px 0; opacity:0.7">${e.message}</p>
+        <button class="modal-btn" onclick="state.page='home'; ui.render()">Retour Accueil</button>
+      </div>`;
+    }
   },
 
   vAuth() {
@@ -48,7 +85,7 @@ const ui = {
   },
 
   vHome() {
-    const q = state.search.toLowerCase();
+    const q = (state.search||'').toLowerCase();
     const fil = state.patients.filter(p => p.status === state.category && `${p.nom} ${p.prenom}`.toLowerCase().includes(q));
     const seen = state.patients.filter(p => p.status==='active' && (p.seenDates||[]).includes(utils.today())).length;
     let h = ''; const done = new Set();
@@ -80,7 +117,8 @@ const ui = {
   },
 
   vDossier() {
-    const p = utils.p(state.activePid); if(!p) return '';
+    const p = utils.p(state.activePid); 
+    if(!p) return `<div style="padding:40px; text-align:center; color:white;"><h2>Dossier introuvable</h2><button class="modal-btn" onclick="ui.go('home')">Retour</button></div>`;
     const isSeen = (p.seenDates||[]).includes(utils.today());
     const ids = [{k:'vitale',l:'Carte Vitale',i:'💳'},{k:'mutuelle',l:'Mutuelle',i:'🛡️'},{k:'identite',l:'C.N.I',i:'🆔'}];
     
@@ -91,20 +129,31 @@ const ui = {
       
       <div class="section-label">Identité</div>
       <div class="docs-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
-        ${ids.map(id => `<div class="doc-card" style="text-align:center; padding: 10px 5px;"><span style="font-size:20px; display:block;">${id.i}</span><div style="font-size:10px; margin-top:5px;">${id.l}</div></div>`).join('')}
+        ${ids.map(id => {
+          const hasImg = p.idDocs && p.idDocs[id.k];
+          return `<div class="doc-card ${hasImg?'active':''}" style="text-align:center; padding: 10px 5px;" onclick="core.handleIdClick('${id.k}')">
+            <span style="font-size:20px; display:block;">${id.i}</span>
+            <div style="font-size:10px; margin-top:5px;">${id.l}</div>
+            ${hasImg ? '<div style="font-size:8px; color:var(--accent2); margin-top:2px">✓ Photo</div>' : ''}
+          </div>`;
+        }).join('')}
       </div>
 
       <div class="section-label">Contacts</div>
       <div style="margin-bottom: 20px;">
-        ${(p.contacts||[]).map(c => `<div class="patient-card" style="padding: 10px; margin-bottom: 5px;">
-          <div style="flex:1">
-            <b>${c.nom}</b><br>
-            <div style="display:flex; gap:10px; margin-top:5px;">
-              ${c.tel ? `<a href="tel:${c.tel}" style="color:var(--accent2); text-decoration:none; font-size:12px;">📞 Appeler</a>` : ''}
-              ${c.mail ? `<a href="mailto:${c.mail}" style="color:var(--blue); text-decoration:none; font-size:12px;">✉️ Email</a>` : ''}
-            </div>
+        ${(p.contacts||[]).map(c => `<div class="patient-card" style="padding: 10px; margin-bottom: 5px; flex-direction:column; align-items:flex-start;">
+          <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+            <b>${c.nom}</b>
+            <button class="tbtn" style="background:transparent; color:var(--red); font-size:14px; width:auto; height:auto;" onclick="core.deleteContact(${p.id}, ${c.id})">✕</button>
           </div>
-          <button class="tbtn" style="background:transparent; color:var(--red); font-size:14px;" onclick="core.deleteContact(${p.id}, ${c.id})">✕</button>
+          <div style="font-size:12px; color:var(--text2); margin-top:4px;">
+            ${c.tel ? `<div>📞 ${c.tel}</div>` : ''}
+            ${c.mail ? `<div style="word-break:break-all;">✉️ ${c.mail}</div>` : ''}
+          </div>
+          <div style="display:flex; gap:10px; margin-top:8px; width:100%;">
+            ${c.tel ? `<a href="tel:${c.tel}" class="cat-btn" style="flex:1; text-decoration:none; padding:6px; font-size:10px;">Appeler</a>` : ''}
+            ${c.mail ? `<a href="mailto:${c.mail}" class="cat-btn" style="flex:1; text-decoration:none; padding:6px; font-size:10px; border-color:var(--blue); color:var(--blue);">Email</a>` : ''}
+          </div>
         </div>`).join('')}
         <button class="cat-btn" style="width:100%; margin-top:5px; border-style:dashed" onclick="ui.openModal('modal-contact')">＋ Ajouter un contact</button>
       </div>
@@ -121,7 +170,10 @@ const ui = {
   },
 
   vForm() {
-    const p = utils.p(state.activePid); const d = p.docs.find(x => x.id == state.activeDid);
+    const p = utils.p(state.activePid); 
+    const d = p ? p.docs.find(x => x.id == state.activeDid) : null;
+    if(!p || !d) return `<div style="padding:40px; text-align:center; color:white;"><h2>Document introuvable</h2><button class="modal-btn" onclick="ui.go('home')">Retour</button></div>`;
+    
     return `<div class="topbar"><button class="tbtn" onclick="ui.go('dossier',${p.id})">←</button><div class="topbar-title">${d.label}</div><button class="tbtn" onclick="ui.toast('PDF... bientôt')">📄</button></div>
     <div class="content anim">
       <input type="datetime-local" id="doc-dt" value="${d.datetime}" class="modal-input" style="margin-bottom:20px" oninput="ui.autoSave()">
@@ -144,15 +196,35 @@ const ui = {
     <div class="content anim"><button class="modal-btn" onclick="auth.setPin()">🔑 Code PIN</button><button class="modal-btn" onclick="state.page='login';ui.render()" style="margin-top:10px;background:var(--bg3)">🔄 Profil (${state.currentUser})</button><button class="modal-btn" style="margin-top:40px;background:var(--red)" onclick="ui.reset()">⚠️ Reset complet</button></div>`;
   },
 
-  addRow() { const p=utils.p(state.activePid); const d=p.docs.find(x=>x.id==state.activeDid); d.entries.push({date:utils.today(),heure:'08:00',sys:'',dia:'',pouls:'',avant:'',apres:''}); this.render(); },
+  addRow() { 
+    const p=utils.p(state.activePid); 
+    const d=p ? p.docs.find(x=>x.id==state.activeDid) : null; 
+    if(d) {
+      d.entries.push({date:utils.today(),heure:'08:00',sys:'',dia:'',pouls:'',avant:'',apres:''}); 
+      this.render(); 
+    }
+  },
+
   autoSave() {
-    const p=utils.p(state.activePid); const d=p.docs.find(x=>x.id==state.activeDid); if(!d) return;
-    d.datetime = document.getElementById('doc-dt').value;
+    const p=utils.p(state.activePid); 
+    const d=p ? p.docs.find(x=>x.id==state.activeDid) : null; 
+    if(!d) return;
+    const dtInput = document.getElementById('doc-dt');
+    if(dtInput) d.datetime = dtInput.value;
     if(d.type==='tension'||d.type==='glycemie') {
-      const rows={}; document.querySelectorAll('[data-t]').forEach(el=>{ const i=el.dataset.i,t=el.dataset.t; if(!rows[i])rows[i]={}; rows[i][t]=el.value; });
+      const rows={}; 
+      document.querySelectorAll('[data-t]').forEach(el=>{ 
+        const i=el.dataset.i, t=el.dataset.t; 
+        if(!rows[i])rows[i]={}; 
+        rows[i][t]=el.value; 
+      });
       d.entries = Object.values(rows).sort((a,b)=>(a.date+a.heure).localeCompare(b.date+b.heure));
-    } else { const o=document.getElementById('obs'); if(o) d.obs=o.value; }
+    } else { 
+      const o=document.getElementById('obs'); 
+      if(o) d.obs=o.value; 
+    }
     db.save('patients', p);
   },
+
   reset() { if(confirm('TOUT EFFACER ?')) { indexedDB.deleteDatabase(DB_NAME); location.reload(); } }
 };

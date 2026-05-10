@@ -1,4 +1,4 @@
-// CORE
+// CORE - Sécurisé
 const core = {
   async boot() {
     try {
@@ -11,25 +11,45 @@ const core = {
         for(let p of def) { state.patients.push(p); await db.save('patients', p); }
       }
       ui.render();
-    } catch(e) { document.body.innerHTML = '<div style="color:white;padding:40px;text-align:center"><h2>Erreur Stockage</h2><button onclick="location.reload()">Réessayer</button></div>'; }
+    } catch(e) { 
+      console.error('Boot error:', e);
+      document.body.innerHTML = '<div style="color:white;padding:40px;text-align:center"><h2>Erreur Stockage</h2><button class="modal-btn" onclick="location.reload()">Réessayer</button></div>'; 
+    }
   },
+
   async savePatient() {
-    const d = { prenom:document.getElementById('np-prenom').value, nom:document.getElementById('np-nom').value, ddn:document.getElementById('np-ddn').value, medecin:document.getElementById('np-medecin').value, adresse:document.getElementById('np-adresse').value, notes:document.getElementById('np-notes').value, urgent:document.getElementById('np-urgent').value, status:document.getElementById('np-status').value, couple:document.getElementById('np-couple').value };
+    const d = { 
+      prenom: document.getElementById('np-prenom').value, 
+      nom: document.getElementById('np-nom').value, 
+      ddn: document.getElementById('np-ddn').value, 
+      medecin: document.getElementById('np-medecin').value, 
+      adresse: document.getElementById('np-adresse').value, 
+      notes: document.getElementById('np-notes').value, 
+      urgent: document.getElementById('np-urgent').value, 
+      status: document.getElementById('np-status').value, 
+      couple: document.getElementById('np-couple').value 
+    };
     if(!d.prenom || !d.nom) return ui.toast('⚠️ Nom/Prénom requis');
     let p = state.activePid ? utils.p(state.activePid) : null;
     if(p) { Object.assign(p, d); p.coupleWith = d.couple?parseInt(d.couple):null; } 
-    else { p = { id:Date.now(), ...d, color:COLORS[Math.floor(Math.random()*COLORS.length)], docs:[], contacts:[], idDocs:{}, seenDates:[], coupleWith:d.couple?parseInt(d.couple):null }; state.patients.push(p); }
+    else { 
+      p = { id:Date.now(), ...d, color:COLORS[Math.floor(Math.random()*COLORS.length)], docs:[], contacts:[], idDocs:{}, seenDates:[], coupleWith:d.couple?parseInt(d.couple):null }; 
+      state.patients.push(p); 
+    }
     await db.save('patients', p);
     ui.toast('✓ Enregistré'); ui.closeModal('modal-patient'); ui.render();
   },
+
   async toggleVu(pid) {
     const p = utils.p(pid); if(!p) return;
     const ts = utils.today(); const idx = (p.seenDates||[]).indexOf(ts);
     if(idx>=0) p.seenDates.splice(idx,1); else { if(!p.seenDates)p.seenDates=[]; p.seenDates.push(ts); }
     await db.save('patients', p); ui.render();
   },
+
   async createDoc(t) {
     const p = utils.p(state.activePid);
+    if(!p) return ui.toast('❌ Aucun patient sélectionné');
     const labels = {tension:'Tension',glycemie:'Glycémie',pansement:'Pansement',labo:'Labo',ordonnance:'Ordonnance',cr:'CR'};
     const icons = {tension:'🩺',glycemie:'🩸',pansement:'🩹',labo:'🧪',ordonnance:'💊',cr:'📋'};
     const n = { id: Date.now(), type: t, label: labels[t]||'Doc', icon: icons[t]||'📄', datetime: utils.now(), entries: [] };
@@ -38,8 +58,53 @@ const core = {
     await db.save('patients', p);
     ui.go('form', p.id, n.id);
   },
+
+  async handleIdClick(k) {
+    const p = utils.p(state.activePid);
+    if(!p) return ui.toast('❌ Sélectionnez un patient');
+    let img = (p.idDocs && p.idDocs[k]) ? p.idDocs[k] : null;
+    if(img) {
+      if(img.startsWith('id_')) {
+        const data = await db.get('files', img);
+        if(data) img = URL.createObjectURL(data.blob);
+        else return ui.toast('❌ Image introuvable');
+      }
+      this.openViewer(img, k);
+    } else {
+      this.openImageModal(k);
+    }
+  },
+
+  openImageModal(k) {
+    state._imgTarget = { type: 'id', key: k };
+    ui.openModal('modal-image');
+  },
+
+  openViewer(src, title) {
+    const imgEl = document.getElementById('viewer-img');
+    const titleEl = document.getElementById('viewer-title');
+    if(imgEl) imgEl.src = src;
+    if(titleEl) titleEl.textContent = title;
+    ui.openModal('modal-viewer');
+  },
+
+  async saveImage(e) {
+    const file = e.target.files[0];
+    if(!file) return;
+    const id = 'id_' + Date.now();
+    await db.save('files', { id, blob: file });
+    const p = utils.p(state.activePid);
+    if(!p.idDocs) p.idDocs = {};
+    p.idDocs[state._imgTarget.key] = id;
+    await db.save('patients', p);
+    ui.closeModal('modal-image');
+    ui.render();
+    ui.toast('✓ Photo enregistrée');
+  },
+
   async saveContact() {
     const p = utils.p(state.activePid);
+    if(!p) return ui.toast('❌ Erreur patient');
     const c = { 
       id: Date.now(), 
       nom: document.getElementById('c-nom').value, 
@@ -52,8 +117,10 @@ const core = {
     await db.save('patients', p);
     ui.toast('✓ Contact ajouté'); ui.closeModal('modal-contact'); ui.render();
   },
+
   async deleteContact(pid, cid) {
     const p = utils.p(pid);
+    if(!p) return;
     p.contacts = p.contacts.filter(x => x.id !== cid);
     await db.save('patients', p); ui.render();
   }

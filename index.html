@@ -79,6 +79,28 @@ if ('serviceWorker' in navigator) {
   </div>
 </div>
 
+<!-- IMAGE MODAL -->
+<div class="modal-overlay" id="modal-image">
+  <div class="modal">
+    <div class="modal-title">Ajouter une Photo</div>
+    <p style="font-size:12px; color:var(--text2); margin-bottom:20px">Prenez une photo du document (Carte Vitale, Mutuelle, etc.)</p>
+    <input type="file" id="img-input" accept="image/*" capture="environment" style="display:none" onchange="core.saveImage(event)">
+    <button class="modal-btn" onclick="document.getElementById('img-input').click()">📸 Prendre une photo</button>
+    <button class="modal-btn" onclick="ui.closeModal('modal-image')" style="background:transparent;color:var(--text3)">Annuler</button>
+  </div>
+</div>
+
+<!-- VIEWER MODAL -->
+<div class="modal-overlay" id="modal-viewer">
+  <div class="modal" style="height:90dvh; display:flex; flex-direction:column">
+    <div class="modal-title" id="viewer-title">Document</div>
+    <div style="flex:1; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#000; border-radius:12px">
+      <img id="viewer-img" style="max-width:100%; max-height:100%; object-fit:contain">
+    </div>
+    <button class="modal-btn" onclick="ui.closeModal('modal-viewer')">Fermer</button>
+  </div>
+</div>
+
 <script src="js/db.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/core.js"></script>
