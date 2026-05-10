@@ -63,7 +63,6 @@ const core = {
     const p = utils.p(state.activePid);
     const d = p.docs ? p.docs.find(x => x.id == state.activeDid) : null;
     
-    // On vérifie d'abord si l'image est dans le document ou dans le dossier patient
     let imgId = null;
     if(d && d.idDocs && d.idDocs[k]) imgId = d.idDocs[k];
     else if(p.idDocs && p.idDocs[k]) imgId = p.idDocs[k];
@@ -104,14 +103,21 @@ const core = {
       p.idDocs[state._imgTarget.key] = id;
     } else if(state._imgTarget.type === 'doc') {
       const d = p.docs.find(x => x.id == state.activeDid);
-      if(!d.idDocs) d.idDocs = {};
-      d.idDocs[state._imgTarget.key] = id;
+      if(d.type === 'pansement' && state._imgTarget.key === 'wound_photo') {
+        if(!d.photos) d.photos = [];
+        d.photos.push({ id, date: new Date().toISOString() });
+        if(!d.idDocs) d.idDocs = {};
+        d.idDocs['photo_' + (d.photos.length - 1)] = id;
+      } else {
+        if(!d.idDocs) d.idDocs = {};
+        d.idDocs[state._imgTarget.key] = id;
+      }
     }
     
     await db.save('patients', p);
     ui.closeModal('modal-image');
     ui.render();
-    ui.toast('✓ Photo enregistrée');
+    ui.toast('✓ Document ajouté');
   },
 
   async saveContact() {
@@ -150,6 +156,9 @@ const core = {
     const fExp = document.getElementById('f-exp'); if(fExp) d.expiry = fExp.value;
     const fKIn = document.getElementById('f-key-in'); if(fKIn) d.keyIn = fKIn.value;
     const fKOut = document.getElementById('f-key-out'); if(fKOut) d.keyOut = fKOut.value;
+    const fLoc = document.getElementById('f-loc'); if(fLoc) d.localisation = fLoc.value;
+    const fEval = document.getElementById('f-eval'); if(fEval) d.evaluation = fEval.value;
+    const fProt = document.getElementById('f-protocole'); if(fProt) d.protocole = fProt.value;
 
     if(d.type==='tension'||d.type==='glycemie') {
       const rows={}; 

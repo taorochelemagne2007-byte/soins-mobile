@@ -178,6 +178,7 @@ const ui = {
     let content = '';
     if(d.type==='tension') content = this.fTension(d);
     else if(d.type==='glycemie') content = this.fGlycemie(d);
+    else if(d.type==='pansement') content = this.fPansement(d);
     else if(d.type==='ordonnance') content = this.fOrdonnance(d);
     else if(d.type==='labo') content = this.fLabo(d);
     else if(d.type==='consentement') content = this.fConsentement(d);
@@ -189,6 +190,42 @@ const ui = {
       ${content}
       <button class="modal-btn" onclick="ui.go('dossier',${p.id})">💾 Enregistrer & Fermer</button>
     </div>`;
+  },
+
+  initSignature() {
+    const canvas = document.getElementById('sig-canvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.strokeStyle = '#222'; ctx.lineWidth = 2;
+    let drawing = false;
+    const getPos = e => {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+      const clientY = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
+      return { x: (clientX - rect.left) * (canvas.width / rect.width), y: (clientY - rect.top) * (canvas.height / rect.height) };
+    };
+    const start = e => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
+    const move = e => { if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+    const stop = () => drawing = false;
+    canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+    canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', stop);
+    canvas.addEventListener('touchstart', start); canvas.addEventListener('touchmove', move); canvas.addEventListener('touchend', stop);
+  },
+
+  clearSignature() {
+    const canvas = document.getElementById('sig-canvas');
+    if(canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  },
+
+  async saveSignature() {
+    if(!confirm('Signer verrouillera ce document. Confirmer ?')) return;
+    const canvas = document.getElementById('sig-canvas');
+    const p = utils.p(state.activePid);
+    const d = p.docs.find(x => x.id == state.activeDid);
+    d.signatureImg = canvas.toDataURL();
+    d.signatureDate = new Date().toISOString();
+    await db.save('patients', p);
+    this.render();
   },
 
   vOrdonnancier() {
@@ -217,10 +254,12 @@ const ui = {
       <div style="margin-top:20px">${document.querySelector('.content').innerHTML}</div>
     </div>`;
     div.querySelectorAll('button, input[type="file"], .doc-card').forEach(el => el.remove());
-    // Convertir les inputs en texte pour le PDF
-    div.querySelectorAll('input').forEach(i => {
-      const span = document.createElement('span');
-      span.textContent = i.value;
+    div.querySelectorAll('input, textarea').forEach(i => {
+      const span = document.createElement('div');
+      span.style.margin = '10px 0';
+      span.style.padding = '10px';
+      span.style.borderBottom = '1px solid #eee';
+      span.innerHTML = `<b>${i.previousElementSibling?.textContent || ''}:</b> ${i.value || '(vide)'}`;
       i.parentNode.replaceChild(span, i);
     });
     html2pdf().from(div).set({margin:10, filename: `${p.nom}_${d.label}.pdf`}).save();
