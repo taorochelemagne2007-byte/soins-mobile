@@ -82,10 +82,33 @@ const ui = {
   vDossier() {
     const p = utils.p(state.activePid); if(!p) return '';
     const isSeen = (p.seenDates||[]).includes(utils.today());
+    const ids = [{k:'vitale',l:'Carte Vitale',i:'💳'},{k:'mutuelle',l:'Mutuelle',i:'🛡️'},{k:'identite',l:'C.N.I',i:'🆔'}];
+    
     return `<div class="topbar"><button class="tbtn" onclick="ui.go('home')">←</button><div class="topbar-title">${p.prenom} ${p.nom}</div><div style="display:flex;gap:6px"><button class="tbtn" onclick="ui.openModal('modal-patient')">✏️</button></div></div>
     <div class="content anim">
       <div class="patient-card" style="margin-bottom:20px;cursor:default"><div class="patient-avatar" style="width:56px;height:56px;background:${p.color}22;color:${p.color};font-size:24px">${utils.ini(p)}</div><div class="patient-info"><h2 style="font-size:20px">${p.prenom} ${p.nom}</h2><p style="color:var(--text2)">${utils.fd(p.ddn)} (${utils.age(p.ddn)})</p></div></div>
       <button class="vu-btn ${isSeen?'is-seen':'not-seen'}" onclick="core.toggleVu(${p.id})">${isSeen?'✅ Vu aujourd\'hui':'⬜ Marquer comme vu'}</button>
+      
+      <div class="section-label">Identité</div>
+      <div class="docs-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
+        ${ids.map(id => `<div class="doc-card" style="text-align:center; padding: 10px 5px;"><span style="font-size:20px; display:block;">${id.i}</span><div style="font-size:10px; margin-top:5px;">${id.l}</div></div>`).join('')}
+      </div>
+
+      <div class="section-label">Contacts</div>
+      <div style="margin-bottom: 20px;">
+        ${(p.contacts||[]).map(c => `<div class="patient-card" style="padding: 10px; margin-bottom: 5px;">
+          <div style="flex:1">
+            <b>${c.nom}</b><br>
+            <div style="display:flex; gap:10px; margin-top:5px;">
+              ${c.tel ? `<a href="tel:${c.tel}" style="color:var(--accent2); text-decoration:none; font-size:12px;">📞 Appeler</a>` : ''}
+              ${c.mail ? `<a href="mailto:${c.mail}" style="color:var(--blue); text-decoration:none; font-size:12px;">✉️ Email</a>` : ''}
+            </div>
+          </div>
+          <button class="tbtn" style="background:transparent; color:var(--red); font-size:14px;" onclick="core.deleteContact(${p.id}, ${c.id})">✕</button>
+        </div>`).join('')}
+        <button class="cat-btn" style="width:100%; margin-top:5px; border-style:dashed" onclick="ui.openModal('modal-contact')">＋ Ajouter un contact</button>
+      </div>
+
       <div class="section-label">Documents</div>
       <div class="docs-grid">${(p.docs||[]).map(d => `<div class="doc-card" onclick="ui.go('form',${p.id},${d.id})"><span class="doc-icon">${d.icon}</span><div class="doc-name">${d.label}</div></div>`).join('')}<div class="doc-card" style="border:2px dashed var(--border);text-align:center" onclick="ui.go('modeles')"><span style="font-size:24px">＋</span></div></div>
     </div>`;
@@ -93,7 +116,7 @@ const ui = {
 
   vModeles() {
     const ms = [{t:'tension',i:'🩺',l:'Tension'},{t:'glycemie',i:'🩸',l:'Glycémie'},{t:'pansement',i:'🩹',l:'Pansement'},{t:'labo',i:'🧪',l:'Labo'},{t:'ordonnance',i:'💊',l:'Ordonnance'},{t:'cr',i:'📋',l:'CR'}];
-    return `<div class="topbar"><button class="tbtn" onclick="ui.go('dossier',${state.activePid})">←</button><div class="topbar-title">Nouveau document</div><div style="width:36px"></div></div>
+    return `<div class="topbar"><button class="tbtn" onclick="ui.go('dossier',state.activePid)">←</button><div class="topbar-title">Nouveau document</div><div style="width:36px"></div></div>
     <div class="content anim"><div class="patient-list">${ms.map(m => `<div class="patient-card" onclick="core.createDoc('${m.t}')"><span style="font-size:24px;margin-right:10px">${m.i}</span><b>${m.l}</b></div>`).join('')}</div></div>`;
   },
 

@@ -37,5 +37,24 @@ const core = {
     p.docs.push(n);
     await db.save('patients', p);
     ui.go('form', p.id, n.id);
+  },
+  async saveContact() {
+    const p = utils.p(state.activePid);
+    const c = { 
+      id: Date.now(), 
+      nom: document.getElementById('c-nom').value, 
+      tel: document.getElementById('c-tel').value,
+      mail: document.getElementById('c-mail').value
+    };
+    if(!c.nom) return ui.toast('⚠️ Nom requis');
+    if(!p.contacts) p.contacts = [];
+    p.contacts.push(c);
+    await db.save('patients', p);
+    ui.toast('✓ Contact ajouté'); ui.closeModal('modal-contact'); ui.render();
+  },
+  async deleteContact(pid, cid) {
+    const p = utils.p(pid);
+    p.contacts = p.contacts.filter(x => x.id !== cid);
+    await db.save('patients', p); ui.render();
   }
 };
