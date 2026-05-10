@@ -1,0 +1,81 @@
+:root{
+  --bg:#0f1923;--bg2:#16232f;--bg3:#1e2f3d;--card:#1a2a38;
+  --accent:#1a9e7e;--accent2:#22c4a0;--accent-dim:rgba(26,158,126,0.15);
+  --red:#e05252;--amber:#e0a832;--blue:#4a9edd;--pink:#d45ead;
+  --text:#e8f0f5;--text2:#8aa0b0;--text3:#4d6070;
+  --border:rgba(255,255,255,0.07);--radius:16px;--radius-sm:10px;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font)}
+#app{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));background:var(--bg2);border-bottom:1px solid var(--border);min-height:60px;flex-shrink:0;z-index:10}
+.content{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch}
+.content::-webkit-scrollbar{display:none}
+
+.tbtn{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:12px;cursor:pointer;border:none;background:var(--bg3);color:var(--text2);font-size:18px}
+.tbtn.accent{background:var(--accent);color:white}
+.user-badge{width:34px;height:34px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border)}
+
+.cat-toggle{display:flex;gap:4px;margin-bottom:16px}
+.cat-btn{flex:1;padding:10px;border-radius:10px;font-size:11px;font-weight:600;text-align:center;background:var(--bg3);color:var(--text3);border:1px solid var(--border);cursor:pointer}
+.cat-btn.active{background:var(--accent-dim);color:var(--accent2);border-color:var(--accent)}
+
+.stats-bar{display:flex;gap:8px;margin-bottom:16px}
+.stat-chip{flex:1;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px;text-align:center}
+.stat-chip .val{font-size:20px;font-weight:600;color:var(--accent2);font-family:var(--mono)}
+.stat-chip .lbl{font-size:10px;color:var(--text3);text-transform:uppercase}
+
+.search-wrap{position:relative;margin-bottom:16px}
+.search-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--text);padding:12px 12px 12px 40px;outline:none;font-family:var(--font)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:0.3}
+
+.patient-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:14px;margin-bottom:8px;cursor:pointer}
+.patient-card.urgent{border-left:4px solid var(--red)}
+.patient-avatar{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:18px}
+.patient-info{flex:1;min-width:0}
+.patient-name{font-size:15px;font-weight:600}
+.patient-meta{font-size:11px;color:var(--text2);margin-top:2px}
+
+.couple-group{border:1px solid rgba(212,94,173,0.3);background:rgba(212,94,173,0.03);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.couple-label{padding:6px 14px;font-size:10px;font-weight:700;color:var(--pink);text-transform:uppercase;border-bottom:1px solid rgba(212,94,173,0.1)}
+
+.vu-btn{width:100%;padding:14px;border-radius:12px;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;border:none;margin-bottom:20px}
+.vu-btn.not-seen{background:var(--bg3);color:var(--text2)}
+.vu-btn.is-seen{background:rgba(26,158,126,0.15);color:var(--accent2);border:1px solid var(--accent)}
+
+.section-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;margin:20px 0 8px}
+.docs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.doc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer}
+.doc-icon{font-size:24px;display:block;margin-bottom:5px}
+.doc-name{font-size:12px;font-weight:600}
+
+.measure-table{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.mt-row{display:grid;border-bottom:1px solid var(--border)}
+.mt-cell{padding:10px 4px;display:flex;align-items:center;justify-content:center;border-right:1px solid var(--border)}
+.mt-cell input{background:transparent;border:none;color:var(--text);text-align:center;width:100%;font-size:12px;outline:none}
+.mt-tension{grid-template-columns:1.2fr 0.8fr 1fr 1fr 1fr}
+.mt-glyc{grid-template-columns:1.2fr 0.8fr 1fr 1fr}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;display:none;align-items:flex-end}
+.modal-overlay.open{display:flex}
+.modal{width:100%;background:var(--bg2);border-radius:24px 24px 0 0;padding:8px 20px 40px;max-height:94dvh;overflow-y:auto}
+.modal-title{font-size:18px;font-weight:600;margin-bottom:20px}
+.modal-field{margin-bottom:14px}
+.modal-field label{display:block;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:6px}
+.modal-input,.modal-select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:12px;outline:none}
+.modal-btn{width:100%;padding:16px;background:var(--accent);border:none;border-radius:12px;color:white;font-weight:600;cursor:pointer;margin-top:10px}
+
+#pdf-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:300;display:none;overflow-y:auto;padding:20px}
+#pdf-overlay.open{display:block}
+.pdf-page{background:white;color:#111;width:100%;max-width:680px;margin:0 auto;padding:40px;border-radius:12px}
+.pdf-header{text-align:center;border-bottom:2px solid #1a9e7e;padding-bottom:20px;margin-bottom:20px}
+.pdf-table{width:100%;border-collapse:collapse;margin-top:20px}
+.pdf-table th{background:#f0faf7;padding:10px;text-align:left;border:1px solid #d0ede6}
+.pdf-table td{padding:10px;border:1px solid #e8f0f5}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--accent);color:white;padding:12px 24px;border-radius:20px;opacity:0;transition:0.3s;z-index:400}
+.toast.show{opacity:1}
+.anim{animation:slideUp 0.3s ease both}
+@keyframes slideUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}

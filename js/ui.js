@@ -1,0 +1,135 @@
+// UI
+const ui = {
+  toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); },
+  openModal(id) { 
+    if(id==='modal-patient') {
+      const p = state.activePid ? utils.p(state.activePid) : null;
+      document.getElementById('mp-title').textContent = p ? 'Modifier Patient' : 'Nouveau Patient';
+      ['prenom','nom','ddn','medecin','adresse','notes','urgent','status'].forEach(k => document.getElementById('np-'+k).value = p?p[k]||'':(k==='status'?'active':''));
+      const sel = document.getElementById('np-couple');
+      sel.innerHTML = '<option value="">-- Aucun --</option>' + state.patients.filter(x=>x.id!==state.activePid).map(x=>`<option value="${x.id}" ${p&&p.coupleWith==x.id?'selected':''}>${x.prenom} ${x.nom}</option>`).join('');
+    }
+    document.getElementById(id).classList.add('open'); 
+  },
+  closeModal(id) { document.getElementById(id).classList.remove('open'); },
+  go(p, pid=null, did=null) { state.page=p; state.activePid=pid; state.activeDid=did; this.render(); window.scrollTo(0,0); },
+
+  render() {
+    const a = document.getElementById('app');
+    if(state.page==='auth') a.innerHTML = this.vAuth();
+    else if(state.page==='login') a.innerHTML = this.vLogin();
+    else if(state.page==='home') a.innerHTML = this.vHome();
+    else if(state.page==='dossier') a.innerHTML = this.vDossier();
+    else if(state.page==='form') a.innerHTML = this.vForm();
+    else if(state.page==='modeles') a.innerHTML = this.vModeles();
+    else if(state.page==='data') a.innerHTML = this.vData();
+    else if(state.page==='ordonnancier') a.innerHTML = this.vOrdonnancier();
+  },
+
+  vAuth() {
+    return `<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;background:var(--bg)">
+      <div style="font-size:40px;margin-bottom:20px">🔒</div>
+      <p style="margin-bottom:30px">Saisissez votre code PIN</p>
+      <input type="password" id="auth-pin" maxlength="4" inputmode="numeric" style="width:150px;height:50px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:white;font-size:32px;text-align:center;letter-spacing:10px;outline:none">
+      <button class="modal-btn" style="max-width:200px;margin-top:30px" onclick="auth.checkPin()">Valider</button>
+    </div>`;
+  },
+
+  vLogin() {
+    return `<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;background:linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%)">
+      <img src="logo.png" style="width:90px;height:90px;border-radius:20px;margin-bottom:20px;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
+      <h1>SoinsMobile</h1><p style="color:var(--text3);margin-bottom:40px">Choisissez votre profil</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:360px">
+        <div class="patient-card" style="flex-direction:column;padding:30px 10px;text-align:center" onclick="state.currentUser='Florence';ui.go('home')"><span style="font-size:40px">🐶</span><br><b>Florence</b></div>
+        <div class="patient-card" style="flex-direction:column;padding:30px 10px;text-align:center" onclick="state.currentUser='Céline';ui.go('home')"><span style="font-size:40px">🐴</span><br><b>Céline</b></div>
+      </div>
+      <div style="position:fixed;bottom:20px;font-size:10px;color:var(--text3)">V1.0 FINAL</div>
+    </div>`;
+  },
+
+  vHome() {
+    const q = state.search.toLowerCase();
+    const fil = state.patients.filter(p => p.status === state.category && `${p.nom} ${p.prenom}`.toLowerCase().includes(q));
+    const seen = state.patients.filter(p => p.status==='active' && (p.seenDates||[]).includes(utils.today())).length;
+    let h = ''; const done = new Set();
+    fil.forEach(p => {
+      if(done.has(p.id)) return; done.add(p.id);
+      const pt = p.coupleWith ? fil.find(x => x.id === p.coupleWith) : null;
+      if(pt && !done.has(pt.id)) { done.add(pt.id); h += `<div class="couple-group"><div class="couple-label">💑 Foyer ${p.nom}</div>${this.pCard(p)}${this.pCard(pt)}</div>`; }
+      else h += this.pCard(p);
+    });
+    return `<div class="topbar">
+      <div style="text-align:left"><div class="topbar-title">SoinsMobile</div><div style="font-size:10px;color:var(--text2)">${new Date().toLocaleDateString()}</div></div>
+      <div style="display:flex;gap:8px;align-items:center"><button class="tbtn" onclick="ui.go('ordonnancier')">💊</button><div class="user-badge">${state.currentUser==='Florence'?'🐶':'🐴'}</div><button class="tbtn" onclick="ui.go('data')">⚙️</button><button class="tbtn accent" onclick="state.activePid=null;ui.openModal('modal-patient')">＋</button></div>
+    </div>
+    <div class="content">
+      <div class="cat-toggle"><div class="cat-btn ${state.category==='active'?'active':''}" onclick="state.category='active';ui.render()">En cours</div><div class="cat-btn ${state.category==='pds'?'active':''}" onclick="state.category='pds';ui.render()">PDS</div><div class="cat-btn ${state.category==='archived'?'active':''}" onclick="state.category='archived';ui.render()">Anciens</div></div>
+      <div class="stats-bar"><div class="stat-chip"><div class="val">${state.patients.filter(x=>x.status==='active').length}</div><div class="lbl">Actifs</div></div><div class="stat-chip"><div class="val">${seen}</div><div class="lbl">Vus</div></div></div>
+      <div class="search-wrap"><input class="search-input" id="si" placeholder="Rechercher..." value="${state.search}" oninput="state.search=this.value;ui.render();document.getElementById('si').focus()"></div>
+      <div class="patient-list">${h || '<div style="text-align:center;padding:40px;opacity:0.3">Vide</div>'}</div>
+    </div>`;
+  },
+
+  pCard(p) {
+    const isSeen = (p.seenDates||[]).includes(utils.today());
+    return `<div class="patient-card anim ${p.urgent?'urgent':''}" onclick="ui.go('dossier', ${p.id})">
+      <div class="patient-avatar" style="background:${p.color}22;color:${p.color}">${utils.ini(p)}</div>
+      <div class="patient-info"><div class="patient-name">${p.prenom} ${p.nom}</div><div class="patient-meta">${utils.age(p.ddn)} — ${p.medecin}</div></div>
+      ${isSeen?'<span style="color:var(--accent2);font-size:18px">✓</span>':''}
+    </div>`;
+  },
+
+  vDossier() {
+    const p = utils.p(state.activePid); if(!p) return '';
+    const isSeen = (p.seenDates||[]).includes(utils.today());
+    return `<div class="topbar"><button class="tbtn" onclick="ui.go('home')">←</button><div class="topbar-title">${p.prenom} ${p.nom}</div><div style="display:flex;gap:6px"><button class="tbtn" onclick="ui.openModal('modal-patient')">✏️</button></div></div>
+    <div class="content anim">
+      <div class="patient-card" style="margin-bottom:20px;cursor:default"><div class="patient-avatar" style="width:56px;height:56px;background:${p.color}22;color:${p.color};font-size:24px">${utils.ini(p)}</div><div class="patient-info"><h2 style="font-size:20px">${p.prenom} ${p.nom}</h2><p style="color:var(--text2)">${utils.fd(p.ddn)} (${utils.age(p.ddn)})</p></div></div>
+      <button class="vu-btn ${isSeen?'is-seen':'not-seen'}" onclick="core.toggleVu(${p.id})">${isSeen?'✅ Vu aujourd\'hui':'⬜ Marquer comme vu'}</button>
+      <div class="section-label">Documents</div>
+      <div class="docs-grid">${(p.docs||[]).map(d => `<div class="doc-card" onclick="ui.go('form',${p.id},${d.id})"><span class="doc-icon">${d.icon}</span><div class="doc-name">${d.label}</div></div>`).join('')}<div class="doc-card" style="border:2px dashed var(--border);text-align:center" onclick="ui.go('modeles')"><span style="font-size:24px">＋</span></div></div>
+    </div>`;
+  },
+
+  vModeles() {
+    const ms = [{t:'tension',i:'🩺',l:'Tension'},{t:'glycemie',i:'🩸',l:'Glycémie'},{t:'pansement',i:'🩹',l:'Pansement'},{t:'labo',i:'🧪',l:'Labo'},{t:'ordonnance',i:'💊',l:'Ordonnance'},{t:'cr',i:'📋',l:'CR'}];
+    return `<div class="topbar"><button class="tbtn" onclick="ui.go('dossier',${state.activePid})">←</button><div class="topbar-title">Nouveau document</div><div style="width:36px"></div></div>
+    <div class="content anim"><div class="patient-list">${ms.map(m => `<div class="patient-card" onclick="core.createDoc('${m.t}')"><span style="font-size:24px;margin-right:10px">${m.i}</span><b>${m.l}</b></div>`).join('')}</div></div>`;
+  },
+
+  vForm() {
+    const p = utils.p(state.activePid); const d = p.docs.find(x => x.id == state.activeDid);
+    return `<div class="topbar"><button class="tbtn" onclick="ui.go('dossier',${p.id})">←</button><div class="topbar-title">${d.label}</div><button class="tbtn" onclick="ui.toast('PDF... bientôt')">📄</button></div>
+    <div class="content anim">
+      <input type="datetime-local" id="doc-dt" value="${d.datetime}" class="modal-input" style="margin-bottom:20px" oninput="ui.autoSave()">
+      ${d.type==='tension'?this.fTension(d):d.type==='glycemie'?this.fGlycemie(d):`<textarea class="modal-input" id="obs" style="min-height:200px" oninput="ui.autoSave()">${d.obs||''}</textarea>`}
+      <button class="modal-btn" onclick="ui.go('dossier',${p.id})">💾 Enregistrer & Fermer</button>
+    </div>`;
+  },
+
+  vOrdonnancier() {
+    const o = [];
+    state.patients.forEach(p => (p.docs||[]).filter(d => d.type === 'ordonnance').forEach(or => o.push({p, or})));
+    return `<div class="topbar"><button class="tbtn" onclick="ui.go('home')">←</button><div class="topbar-title">Ordonnancier</div><div style="width:36px"></div></div>
+    <div class="content anim"><div class="patient-list">
+      ${o.length ? o.map(i => `<div class="patient-card" onclick="ui.go('form', ${i.p.id}, ${i.or.id})">💊 ${i.or.label} - ${i.p.prenom} ${i.p.nom}</div>`).join('') : '<div style="text-align:center;padding:40px;opacity:0.3">Aucune ordonnance</div>'}
+    </div></div>`;
+  },
+
+  vData() {
+    return `<div class="topbar"><button class="tbtn" onclick="ui.go('home')">←</button><div class="topbar-title">Réglages</div><div style="width:36px"></div></div>
+    <div class="content anim"><button class="modal-btn" onclick="auth.setPin()">🔑 Code PIN</button><button class="modal-btn" onclick="state.page='login';ui.render()" style="margin-top:10px;background:var(--bg3)">🔄 Profil (${state.currentUser})</button><button class="modal-btn" style="margin-top:40px;background:var(--red)" onclick="ui.reset()">⚠️ Reset complet</button></div>`;
+  },
+
+  addRow() { const p=utils.p(state.activePid); const d=p.docs.find(x=>x.id==state.activeDid); d.entries.push({date:utils.today(),heure:'08:00',sys:'',dia:'',pouls:'',avant:'',apres:''}); this.render(); },
+  autoSave() {
+    const p=utils.p(state.activePid); const d=p.docs.find(x=>x.id==state.activeDid); if(!d) return;
+    d.datetime = document.getElementById('doc-dt').value;
+    if(d.type==='tension'||d.type==='glycemie') {
+      const rows={}; document.querySelectorAll('[data-t]').forEach(el=>{ const i=el.dataset.i,t=el.dataset.t; if(!rows[i])rows[i]={}; rows[i][t]=el.value; });
+      d.entries = Object.values(rows).sort((a,b)=>(a.date+a.heure).localeCompare(b.date+b.heure));
+    } else { const o=document.getElementById('obs'); if(o) d.obs=o.value; }
+    db.save('patients', p);
+  },
+  reset() { if(confirm('TOUT EFFACER ?')) { indexedDB.deleteDatabase(DB_NAME); location.reload(); } }
+};

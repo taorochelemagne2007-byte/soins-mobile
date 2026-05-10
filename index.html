@@ -8,114 +8,48 @@
 <title>Soins Infirmiers V1</title>
 
 <script>
-/** 
- * KILL SWITCH CACHE : Force le navigateur à ignorer les anciennes versions buggées
- */
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(regs => {
-    for(let r of regs) r.unregister();
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      console.log('SW Registered');
+      // Vérifie si une mise à jour est en attente
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // Une nouvelle version est là, le skipWaiting() dans le SW va déclencher controllerchange
+            console.log('Nouvelle version détectée');
+          }
+        });
+      });
+    }).catch(err => console.log('SW Error', err));
   });
-}
-if ('caches' in window) {
-  caches.keys().then(names => {
-    for (let n of names) caches.delete(n);
+
+  // Force le rechargement quand le nouveau SW prend le contrôle
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return;
+    refreshing = true;
+    window.location.reload();
   });
 }
 </script>
 
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="logo.png">
+<link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<style>
-:root{
-  --bg:#0f1923;--bg2:#16232f;--bg3:#1e2f3d;--card:#1a2a38;
-  --accent:#1a9e7e;--accent2:#22c4a0;--accent-dim:rgba(26,158,126,0.15);
-  --red:#e05252;--amber:#e0a832;--blue:#4a9edd;--pink:#d45ead;
-  --text:#e8f0f5;--text2:#8aa0b0;--text3:#4d6070;
-  --border:rgba(255,255,255,0.07);--radius:16px;--radius-sm:10px;
-  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font)}
-#app{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));background:var(--bg2);border-bottom:1px solid var(--border);min-height:60px;flex-shrink:0;z-index:10}
-.content{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch}
-.content::-webkit-scrollbar{display:none}
-
-.tbtn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;border:none;background:var(--bg3);color:var(--text2);font-size:18px}
-.tbtn.accent{background:var(--accent);color:white}
-.user-badge{width:32px;height:32px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border)}
-.cat-toggle{display:flex;gap:6px;margin-bottom:16px}
-.cat-btn{flex:1;padding:10px;border-radius:10px;font-size:12px;font-weight:600;text-align:center;background:var(--bg3);color:var(--text3);border:1px solid var(--border);cursor:pointer}
-.cat-btn.active{background:var(--accent-dim);color:var(--accent2);border-color:var(--accent)}
-
-.patient-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:14px;margin-bottom:8px;cursor:pointer}
-.patient-card.urgent{border-left:4px solid var(--red)}
-.patient-avatar{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:18px}
-.patient-info{flex:1;min-width:0}
-.patient-name{font-size:15px;font-weight:600}
-.patient-meta{font-size:11px;color:var(--text2);margin-top:2px}
-
-.search-wrap{position:relative;margin-bottom:16px}
-.search-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--text);padding:12px 12px 12px 40px;outline:none;font-family:var(--font)}
-.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:0.3}
-
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.2s}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal{width:100%;background:var(--bg2);border-radius:24px 24px 0 0;padding:8px 20px 40px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);max-height:94dvh;overflow-y:auto}
-.modal-overlay.open .modal{transform:translateY(0)}
-.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:10px auto 20px}
-.modal-title{font-size:18px;font-weight:600;margin-bottom:20px}
-.modal-field{margin-bottom:14px}
-.modal-field label{display:block;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:6px}
-.modal-input,.modal-select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:12px;outline:none;font-family:var(--font)}
-.modal-btn{width:100%;padding:16px;background:var(--accent);border:none;border-radius:12px;color:white;font-weight:600;font-family:var(--font);margin-top:10px}
-
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:white;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:500;opacity:0;transition:all 0.3s;z-index:200;pointer-events:none}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.anim{animation:slideUp 0.3s ease both}
-@keyframes slideUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
-</style>
 </head>
 <body>
-<div id="app">
-  <div style="height:100vh;display:flex;align-items:center;justify-content:center;color:var(--text2)">
-    Chargement...
-  </div>
-</div>
+<div id="app"></div>
 <div id="toast" class="toast"></div>
-
-<!-- PIN MODAL -->
-<div class="modal-overlay" id="modal-pin">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title" style="text-align:center">🔒 Sécurisation</div>
-    <div style="display:flex;justify-content:center;margin-bottom:30px">
-      <input type="password" inputmode="numeric" id="pin-input" maxlength="4" style="width:180px;height:60px;background:var(--bg3);border:1px solid var(--border);border-radius:15px;color:white;font-size:36px;text-align:center;letter-spacing:12px;outline:none">
-    </div>
-    <button class="modal-btn" onclick="auth.checkPin()">Valider</button>
-  </div>
-</div>
-
-<!-- IMAGE SOURCE MODAL -->
-<div class="modal-overlay" id="modal-image">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">📸 Photo</div>
-    <button class="modal-btn" onclick="media.capture('camera')">📷 Appareil Photo</button>
-    <button class="modal-btn" onclick="media.capture('gallery')" style="background:var(--bg3);color:var(--text);margin-top:10px">📁 Galerie</button>
-    <button class="modal-btn" onclick="ui.closeModal('modal-image')" style="background:transparent;border:1px solid var(--border);color:var(--text3);margin-top:10px">Annuler</button>
-  </div>
-</div>
 
 <!-- PATIENT MODAL -->
 <div class="modal-overlay" id="modal-patient">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="mp-title">Nouveau Patient</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="modal-title" id="mp-title">Dossier Patient</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div class="modal-field"><label>Prénom</label><input class="modal-input" id="np-prenom"></div>
       <div class="modal-field"><label>Nom</label><input class="modal-input" id="np-nom"></div>
     </div>
@@ -123,180 +57,22 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div class="modal-field"><label>Médecin</label><input class="modal-input" id="np-medecin"></div>
     <div class="modal-field"><label>Adresse</label><input class="modal-input" id="np-adresse"></div>
     <div class="modal-field"><label>Notes</label><input class="modal-input" id="np-notes"></div>
-    <div class="modal-field"><label>Urgence</label><select class="modal-select" id="np-urgent"><option value="">Non</option><option value="1">Oui (Rouge)</option></select></div>
-    <div class="modal-field"><label>Statut</label><select class="modal-select" id="np-status"><option value="active">Actif</option><option value="archived">Ancien</option></select></div>
-    <button class="modal-btn" onclick="core.savePatient()">Enregistrer</button>
+    <div class="modal-field"><label>Lier à (Couple)</label><select class="modal-select" id="np-couple"></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="modal-field"><label>Urgence</label><select class="modal-select" id="np-urgent"><option value="">Non</option><option value="1">Oui</option></select></div>
+      <div class="modal-field"><label>Statut</label><select class="modal-select" id="np-status"><option value="active">Actif</option><option value="archived">Ancien</option></select></div>
+    </div>
+    <button class="modal-btn" onclick="core.savePatient()">Valider</button>
+    <button class="modal-btn" onclick="ui.closeModal('modal-patient')" style="background:transparent;color:var(--text3)">Annuler</button>
   </div>
 </div>
 
-<script>
-/** 
- * PRODUCTIONS V1.0 - CODE DEFINITIF
- */
-
-// 1. STATE & DB CONFIG
-const DB_NAME = 'SoinsMobile_V1_Final';
-const DB_VERSION = 1;
-const COLORS = ['#1a9e7e','#4a9edd','#e0a832','#e05252','#9b7de0','#e07a5f'];
-
-let state = {
-  page: 'login', currentUser: null, authenticated: false, pin: null,
-  patients: [], activePatientId: null, search: '', category: 'active', db: null
-};
-
-// 2. DATABASE ENGINE
-const db = {
-  init() {
-    return new Promise((resolve, reject) => {
-      const req = indexedDB.open(DB_NAME, DB_VERSION);
-      req.onupgradeneeded = e => {
-        const d = e.target.result;
-        if(!d.objectStoreNames.contains('patients')) d.createObjectStore('patients', {keyPath:'id'});
-        if(!d.objectStoreNames.contains('files')) d.createObjectStore('files', {keyPath:'id'});
-        if(!d.objectStoreNames.contains('config')) d.createObjectStore('config', {keyPath:'key'});
-      };
-      req.onsuccess = e => { state.db = e.target.result; resolve(); };
-      req.onerror = () => reject();
-    });
-  },
-  async save(s, d) { const tx = state.db.transaction(s, 'readwrite'); return new Promise(r => { tx.objectStore(s).put(d).onsuccess = () => r(); }); },
-  async getAll(s) { const tx = state.db.transaction(s, 'readonly'); return new Promise(r => { tx.objectStore(s).getAll().onsuccess = e => r(e.target.result); }); },
-  async get(s, id) { const tx = state.db.transaction(s, 'readonly'); return new Promise(r => { tx.objectStore(s).get(id).onsuccess = e => r(e.target.result); }); },
-  async delete(s, id) { const tx = state.db.transaction(s, 'readwrite'); return new Promise(r => { tx.objectStore(s).delete(id).onsuccess = () => r(); }); }
-};
-
-// 3. UTILS
-const utils = {
-  p: id => state.patients.find(x => x.id == id),
-  ini: p => (p.prenom[0]||'') + (p.nom[0]||''),
-  fd: d => { if(!d) return ''; const p=d.split('-'); return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:d },
-  age: d => { if(!d) return ''; return Math.floor((Date.now()-new Date(d))/31557600000)+' ans' },
-  today: () => new Date().toISOString().split('T')[0]
-};
-
-// 4. CORE LOGIC
-const core = {
-  async boot() {
-    try {
-      await db.init();
-      state.patients = await db.getAll('patients');
-      const pinObj = await db.get('config', 'app_pin');
-      if(pinObj) { state.pin = pinObj.value; ui.openModal('modal-pin'); } else { state.authenticated = true; }
-      if(state.patients.length === 0) {
-        const def = [
-          {id:1,nom:'Dubois',prenom:'Robert',ddn:'1948-03-12',medecin:'Dr. Lemaire',adresse:'Nîmes',notes:'HTA',color:COLORS[0],status:'active',docs:[],contacts:[],idDocs:{},seenDates:[]},
-          {id:2,nom:'Dubois',prenom:'Michèle',ddn:'1952-05-30',medecin:'Dr. Lemaire',adresse:'Nîmes',notes:'Arthrose',color:COLORS[2],status:'active',docs:[],contacts:[],idDocs:{},seenDates:[]}
-        ];
-        for(let p of def) { state.patients.push(p); await db.save('patients', p); }
-      }
-      ui.render();
-    } catch(e) { document.body.innerHTML = '<div style="color:white;padding:40px;text-align:center"><h2>Erreur de Stockage</h2><button onclick="location.reload()">Réessayer</button></div>'; }
-  },
-  async savePatient() {
-    const d = {
-      prenom: document.getElementById('np-prenom').value,
-      nom: document.getElementById('np-nom').value,
-      ddn: document.getElementById('np-ddn').value,
-      medecin: document.getElementById('np-medecin').value,
-      adresse: document.getElementById('np-adresse').value,
-      notes: document.getElementById('np-notes').value,
-      urgent: document.getElementById('np-urgent').value,
-      status: document.getElementById('np-status').value
-    };
-    if(!d.prenom || !d.nom) return ui.toast('⚠️ Nom/Prénom requis');
-    const p = { id:Date.now(), ...d, color:COLORS[Math.floor(Math.random()*COLORS.length)], docs:[], contacts:[], idDocs:{}, seenDates:[] };
-    state.patients.push(p);
-    await db.save('patients', p);
-    ui.toast('✓ Enregistré'); ui.closeModal('modal-patient'); ui.render();
-  },
-  async toggleVu(pid) {
-    const p = utils.p(pid); if(!p) return;
-    const ts = utils.today();
-    const idx = (p.seenDates||[]).indexOf(ts);
-    if(idx>=0) p.seenDates.splice(idx,1); else { if(!p.seenDates) p.seenDates=[]; p.seenDates.push(ts); }
-    await db.save('patients', p); ui.render();
-  }
-};
-
-// 5. AUTH
-const auth = {
-  checkPin() {
-    if(document.getElementById('pin-input').value === state.pin) { state.authenticated = true; ui.closeModal('modal-pin'); ui.render(); }
-    else { ui.toast('❌ PIN incorrect'); document.getElementById('pin-input').value = ''; }
-  }
-};
-
-// 6. UI ENGINE
-const ui = {
-  toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); },
-  openModal(id) { document.getElementById(id).classList.add('open'); },
-  closeModal(id) { document.getElementById(id).classList.remove('open'); },
-  go(p, pid=null) { state.page=p; state.activePatientId=pid; this.render(); window.scrollTo(0,0); },
-  
-  render() {
-    const a = document.getElementById('app');
-    if(!state.authenticated) { a.innerHTML=''; return; }
-    if(state.page==='login') a.innerHTML = this.vLogin();
-    else if(state.page==='home') a.innerHTML = this.vHome();
-    else if(state.page==='dossier') a.innerHTML = this.vDossier();
-  },
-
-  vLogin() {
-    return `<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;background:linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%)">
-      <img src="logo.png" style="width:100px;height:100px;border-radius:20px;margin-bottom:20px;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
-      <h1>SoinsMobile</h1><p style="color:var(--text3);margin-bottom:50px">Choisissez votre profil</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:360px">
-        <div class="patient-card" style="flex-direction:column;padding:30px 10px;text-align:center" onclick="state.currentUser='Florence';ui.go('home')"><span style="font-size:40px">🐶</span><br><b>Florence</b></div>
-        <div class="patient-card" style="flex-direction:column;padding:30px 10px;text-align:center" onclick="state.currentUser='Céline';ui.go('home')"><span style="font-size:40px">🐴</span><br><b>Céline</b></div>
-      </div>
-    </div>`;
-  },
-
-  vHome() {
-    const q = state.search.toLowerCase();
-    const fil = state.patients.filter(p => p.status === state.category && `${p.nom} ${p.prenom}`.toLowerCase().includes(q));
-    return `<div class="topbar">
-      <div style="text-align:left"><div class="topbar-title">SoinsMobile</div><div style="font-size:10px;color:var(--text3)">${new Date().toLocaleDateString()}</div></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <div class="user-badge">${state.currentUser==='Florence'?'🐶':'🐴'}</div>
-        <button class="tbtn accent" onclick="ui.openModal('modal-patient')">＋</button>
-      </div>
-    </div>
-    <div class="content">
-      <div class="cat-toggle">
-        <div class="cat-btn ${state.category==='active'?'active':''}" onclick="state.category='active';ui.render()">En cours</div>
-        <div class="cat-btn ${state.category==='archived'?'active':''}" onclick="state.category='archived';ui.render()">Anciens</div>
-      </div>
-      <div class="search-wrap">
-        <input class="search-input" id="si" placeholder="Rechercher..." value="${state.search}" oninput="state.search=this.value;ui.render();document.getElementById('si').focus()">
-      </div>
-      <div class="patient-list">${fil.map(p => `
-        <div class="patient-card anim" onclick="ui.go('dossier', ${p.id})">
-          <div class="patient-avatar" style="background:${p.color}22;color:${p.color}">${utils.ini(p)}</div>
-          <div class="patient-info"><div class="patient-name">${p.prenom} ${p.nom}</div><div class="patient-meta">${utils.age(p.ddn)}</div></div>
-          ${(p.seenDates||[]).includes(utils.today()) ? '<span style="color:var(--accent2)">✓</span>' : ''}
-        </div>`).join('')}
-      </div>
-    </div>`;
-  },
-
-  vDossier() {
-    const p = utils.p(state.activePatientId); if(!p) return '';
-    const isSeen = (p.seenDates||[]).includes(utils.today());
-    return `<div class="topbar"><button class="tbtn" onclick="ui.go('home')">←</button><div class="topbar-title">${p.prenom} ${p.nom}</div><div style="width:36px"></div></div>
-    <div class="content anim">
-      <div class="patient-card" style="margin-bottom:20px;cursor:default">
-        <div class="patient-avatar" style="width:56px;height:56px;background:${p.color}22;color:${p.color};font-size:24px">${utils.ini(p)}</div>
-        <div class="patient-info"><h2 style="font-size:20px">${p.prenom} ${p.nom}</h2><p>${utils.fd(p.ddn)}</p></div>
-      </div>
-      <button class="modal-btn" onclick="core.toggleVu(${p.id})" style="background:${isSeen?'var(--accent-dim)':'var(--bg3)'};color:${isSeen?'var(--accent2)':'var(--text2)'};border:1px solid ${isSeen?'var(--accent)':'var(--border)'}">
-        ${isSeen?'✅ Vu aujourd\'hui':'⬜ Marquer comme vu'}
-      </button>
-    </div>`;
-  }
-};
-
-core.boot();
-</script>
+<script src="js/db.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/core.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/forms.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
