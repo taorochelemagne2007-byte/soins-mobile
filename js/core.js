@@ -170,14 +170,25 @@ const core = {
     const fEval = document.getElementById('f-eval'); if(fEval) d.evaluation = fEval.value;
     const fProt = document.getElementById('f-protocole'); if(fProt) d.protocole = fProt.value;
 
-    if(d.type==='tension'||d.type==='glycemie') {
+    if(d.type==='tension'||d.type==='glycemie'||d.type==='consentement') {
       const rows={}; 
       document.querySelectorAll('[data-t]').forEach(el=>{ 
         const i=el.dataset.i, t=el.dataset.t; 
         if(!rows[i])rows[i]={}; 
         rows[i][t]=el.value; 
       });
-      d.entries = Object.values(rows).sort((a,b)=>(a.date+a.heure).localeCompare(b.date+b.heure));
+      // Keep existing signatures and users if they exist
+      Object.keys(rows).forEach(i => {
+        if(d.entries[i]) {
+          if(d.entries[i].signatureDate) {
+            rows[i].signatureDate = d.entries[i].signatureDate;
+            rows[i].signatureImg = d.entries[i].signatureImg;
+            rows[i].user = d.entries[i].user;
+          }
+        }
+      });
+      d.entries = Object.values(rows);
+      if(d.type!=='consentement') d.entries.sort((a,b)=>(a.date+a.heure).localeCompare(b.date+b.heure));
     } else { 
       const o=document.getElementById('obs'); 
       if(o) d.obs=o.value; 

@@ -95,12 +95,13 @@ if ('serviceWorker' in navigator) {
 
 <!-- VIEWER MODAL -->
 <div class="modal-overlay" id="modal-viewer">
-  <div class="modal" style="height:90dvh; display:flex; flex-direction:column">
-    <div class="modal-title" id="viewer-title">Document</div>
+  <div class="modal" style="height:90dvh; display:flex; flex-direction:column; background:#000; position:relative">
+    <button class="tbtn" style="position:absolute; top:10px; right:10px; z-index:100; background:rgba(255,255,255,0.2); color:white" onclick="ui.closeModal('modal-viewer')">✕</button>
+    <div class="modal-title" id="viewer-title" style="color:white; border:none">Document</div>
     <div style="flex:1; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#000; border-radius:12px">
       <img id="viewer-img" style="max-width:100%; max-height:100%; object-fit:contain">
     </div>
-    <button class="modal-btn" onclick="ui.closeModal('modal-viewer')">Fermer</button>
+    <button class="modal-btn" style="background:var(--accent); margin-top:10px" onclick="ui.closeModal('modal-viewer')">← Retour au dossier</button>
   </div>
 </div>
 

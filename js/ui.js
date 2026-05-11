@@ -125,7 +125,20 @@ const ui = {
     
     return `<div class="topbar"><button class="tbtn" onclick="ui.go('home')">←</button><div class="topbar-title">${p.prenom} ${p.nom}</div><div style="display:flex;gap:6px"><button class="tbtn" onclick="ui.openModal('modal-patient')">✏️</button></div></div>
     <div class="content anim">
-      <div class="patient-card" style="margin-bottom:20px;cursor:default"><div class="patient-avatar" style="width:56px;height:56px;background:${p.color}22;color:${p.color};font-size:24px">${utils.ini(p)}</div><div class="patient-info"><h2 style="font-size:20px">${p.prenom} ${p.nom}</h2><p style="color:var(--text2)">${utils.fd(p.ddn)} (${utils.age(p.ddn)})</p></div></div>
+      <div class="patient-card" style="margin-bottom:20px;cursor:default;flex-direction:column;align-items:flex-start;gap:15px">
+        <div style="display:flex;align-items:center;gap:15px;width:100%">
+          <div class="patient-avatar" style="width:56px;height:56px;background:${p.color}22;color:${p.color};font-size:24px">${utils.ini(p)}</div>
+          <div class="patient-info">
+            <h2 style="font-size:20px">${p.prenom} ${p.nom}</h2>
+            <p style="color:var(--text2)">${utils.fd(p.ddn)} (${utils.age(p.ddn)})</p>
+          </div>
+        </div>
+        <div style="width:100%;font-size:13px;border-top:1px solid var(--border);padding-top:10px">
+          <div style="margin-bottom:5px"><b>🏠 Adresse:</b> ${p.adresse || 'Non renseignée'}</div>
+          <div style="margin-bottom:5px"><b>👨‍⚕️ Médecin:</b> ${p.medecin || 'Non renseigné'}</div>
+          <div style="font-style:italic;color:var(--text2)"><b>📝 Notes:</b> ${p.notes || 'Aucune note'}</div>
+        </div>
+      </div>
       <button class="vu-btn ${isSeen?'is-seen':'not-seen'}" onclick="core.toggleVu(${p.id})">${isSeen?'✅ Vu aujourd\'hui':'⬜ Marquer comme vu'}</button>
       
       <div class="section-label">Identité</div>
@@ -192,8 +205,8 @@ const ui = {
     </div>`;
   },
 
-  initSignature() {
-    const canvas = document.getElementById('sig-canvas');
+  initSignature(rowIdx) {
+    const canvas = document.getElementById(rowIdx !== undefined ? 'sig-canvas-'+rowIdx : 'sig-canvas');
     if(!canvas) return;
     const ctx = canvas.getContext('2d');
     ctx.strokeStyle = '#222'; ctx.lineWidth = 2;
@@ -204,26 +217,36 @@ const ui = {
       const clientY = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
       return { x: (clientX - rect.left) * (canvas.width / rect.width), y: (clientY - rect.top) * (canvas.height / rect.height) };
     };
-    const start = e => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
-    const move = e => { if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+    const start = e => { e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
+    const move = e => { e.preventDefault(); if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
     const stop = () => drawing = false;
     canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
     canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', stop);
-    canvas.addEventListener('touchstart', start); canvas.addEventListener('touchmove', move); canvas.addEventListener('touchend', stop);
+    canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', move, {passive:false}); canvas.addEventListener('touchend', stop);
   },
 
-  clearSignature() {
-    const canvas = document.getElementById('sig-canvas');
+  clearSignature(rowIdx) {
+    const canvas = document.getElementById(rowIdx !== undefined ? 'sig-canvas-'+rowIdx : 'sig-canvas');
     if(canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
   },
 
-  async saveSignature() {
-    if(!confirm('Signer verrouillera ce document. Confirmer ?')) return;
-    const canvas = document.getElementById('sig-canvas');
+  async saveSignature(rowIdx) {
+    if(!confirm('Signer verrouillera cette ligne. Confirmer ?')) return;
+    const canvas = document.getElementById(rowIdx !== undefined ? 'sig-canvas-'+rowIdx : 'sig-canvas');
     const p = utils.p(state.activePid);
     const d = p.docs.find(x => x.id == state.activeDid);
-    d.signatureImg = canvas.toDataURL();
-    d.signatureDate = new Date().toISOString();
+    const img = canvas.toDataURL();
+    const date = new Date().toISOString();
+    
+    if(rowIdx !== undefined) {
+      d.entries[rowIdx].signatureImg = img;
+      d.entries[rowIdx].signatureDate = date;
+      d.entries[rowIdx].user = state.currentUser;
+    } else {
+      d.signatureImg = img;
+      d.signatureDate = date;
+    }
+    
     await db.save('patients', p);
     this.render();
   },
@@ -263,22 +286,57 @@ const ui = {
     const p = utils.p(state.activePid);
     const d = p.docs.find(x => x.id == state.activeDid);
     const div = document.createElement('div');
-    div.innerHTML = `<div style="padding:40px; font-family:sans-serif; background:white; color:black;">
-      <h1 style="color:#1a9e7e">${d.label}</h1>
-      <p><b>Patient:</b> ${p.prenom} ${p.nom}</p>
-      <p><b>Date:</b> ${new Date(d.datetime).toLocaleString()}</p>
-      <hr>
-      <div style="margin-top:20px">${document.querySelector('.content').innerHTML}</div>
-    </div>`;
-    div.querySelectorAll('button, input[type="file"], .doc-card').forEach(el => el.remove());
-    div.querySelectorAll('input, textarea').forEach(i => {
+    div.style.padding = '40px';
+    div.style.fontFamily = 'sans-serif';
+    div.style.background = 'white';
+    div.style.color = 'black';
+    
+    let reportContent = '';
+    const contentEl = document.querySelector('.content').cloneNode(true);
+    
+    // Cleanup unwanted elements for PDF
+    contentEl.querySelectorAll('button, input[type="file"], .doc-card, .section-label:contains("Suivi Photo"), .section-label:contains("Signature"), #sig-canvas, .measure-table:has([onclick*="photo"])').forEach(el => el.remove());
+    
+    // Specifically target the "Suivi Photo" table in Pansement
+    if(d.type === 'pansement') {
+      const labels = contentEl.querySelectorAll('.section-label');
+      labels.forEach(l => { if(l.textContent.includes('Suivi Photo')) {
+        let next = l.nextElementSibling;
+        while(next && !next.classList.contains('section-label')) {
+          let tmp = next; next = next.nextElementSibling; tmp.remove();
+        }
+        l.remove();
+      }});
+    }
+
+    contentEl.querySelectorAll('input, textarea').forEach(i => {
       const span = document.createElement('div');
       span.style.margin = '10px 0';
       span.style.padding = '10px';
       span.style.borderBottom = '1px solid #eee';
-      span.innerHTML = `<b>${i.previousElementSibling?.textContent || ''}:</b> ${i.value || '(vide)'}`;
+      let label = i.previousElementSibling?.textContent || '';
+      if(i.dataset.t) label = i.dataset.t;
+      span.innerHTML = `<b>${label}:</b> ${i.value || '(vide)'}`;
       i.parentNode.replaceChild(span, i);
     });
+
+    div.innerHTML = `
+      <h1 style="color:#1a9e7e;margin-bottom:10px">${d.label}</h1>
+      <div style="background:#f9f9f9;padding:15px;border-radius:10px;margin-bottom:20px">
+        <p><b>Patient:</b> ${p.prenom} ${p.nom} (${utils.age(p.ddn)})</p>
+        <p><b>Date Document:</b> ${new Date(d.datetime).toLocaleString()}</p>
+        <p><b>Soignant:</b> ${d.user || 'Non précisé'}</p>
+      </div>
+      <hr style="border:none;border-top:1px solid #eee">
+      <div style="margin-top:20px">${contentEl.innerHTML}</div>
+      ${d.signatureImg ? `
+        <div style="margin-top:40px;text-align:right">
+          <p style="font-size:12px">Signé le ${new Date(d.signatureDate).toLocaleString()}</p>
+          <img src="${d.signatureImg}" style="height:80px;filter:grayscale(1)">
+        </div>
+      ` : ''}
+    `;
+    
     html2pdf().from(div).set({margin:10, filename: `${p.nom}_${d.label}.pdf`}).save();
   },
 

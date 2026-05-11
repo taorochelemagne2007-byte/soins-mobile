@@ -74,33 +74,37 @@ Object.assign(ui, {
   },
 
   fConsentement(d) {
-    const isLocked = !!d.signatureDate;
-    return `<div class="section-label">Gestion des Clés</div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px">
-      <div class="modal-field"><label>Clés reçues le</label><input class="modal-input" id="f-key-in" type="date" value="${d.keyIn||''}" ${isLocked?'disabled':''} oninput="ui.autoSave()"></div>
-      <div class="modal-field"><label>Clés restituées le</label><input class="modal-input" id="f-key-out" type="date" value="${d.keyOut||''}" ${isLocked?'disabled':''} oninput="ui.autoSave()"></div>
-    </div>
-    <div class="modal-field"><label>Détails Consentement</label>
-      <textarea class="modal-input" id="obs" style="min-height:100px" placeholder="Notes sur le consentement..." ${isLocked?'disabled':''} oninput="ui.autoSave()">${d.obs||''}</textarea>
-    </div>
-    
-    <div class="section-label">Signature Patient</div>
-    ${isLocked ? 
-      `<div style="background:var(--bg2); padding:15px; border-radius:12px; text-align:center; border:1px solid var(--accent)">
-        <p style="color:var(--accent2); font-size:12px; margin-bottom:10px">✅ Document signé le ${new Date(d.signatureDate).toLocaleString()}</p>
-        <img src="${d.signatureImg}" style="max-width:100%; height:80px; filter:invert(1) grayscale(1); border:1px solid var(--border)">
-        <p style="font-size:10px; color:var(--text3); margin-top:10px">🔒 Document verrouillé (non modifiable)</p>
-      </div>` :
-      `<div style="background:#fff; border-radius:12px; overflow:hidden">
-        <canvas id="sig-canvas" style="width:100%; height:150px; cursor:crosshair; touch-action:none"></canvas>
-        <div style="display:flex; border-top:1px solid #eee">
-          <button class="modal-btn" style="background:#eee; color:#666; margin:0; border-radius:0" onclick="ui.clearSignature()">Effacer</button>
-          <button class="modal-btn" style="margin:0; border-radius:0" onclick="ui.saveSignature()">Signer officiellement</button>
-        </div>
+    if(!d.entries) d.entries = [];
+    return `<div class="section-label">Tableau de Suivi & Consentement</div>
+    <div class="measure-table">
+      <div class="mt-row" style="grid-template-columns: 1fr 2fr 1.5fr; background:var(--bg3); font-weight:bold; font-size:10px">
+        <div class="mt-cell">Date</div><div class="mt-cell">Objet / Note</div><div class="mt-cell">Signature</div>
       </div>
-      <p style="font-size:10px; color:var(--text3); margin-top:5px">La signature verrouillera définitivement ce document.</p>
-      <script>setTimeout(() => ui.initSignature(), 100);</script>`
-    }
-    `;
+      ${d.entries.map((e,i) => {
+        const isLocked = !!e.signatureDate;
+        return `<div class="mt-row" style="grid-template-columns: 1fr 2fr 1.5fr; min-height:60px; align-items:center">
+          <div class="mt-cell"><input data-t="date" data-i="${i}" value="${e.date}" type="date" ${isLocked?'disabled':''} oninput="ui.autoSave()"></div>
+          <div class="mt-cell"><textarea data-t="note" data-i="${i}" style="font-size:11px; width:100%; border:none; background:transparent; color:white; resize:none" placeholder="ex: Remise clés..." ${isLocked?'disabled':''} oninput="ui.autoSave()">${e.note||''}</textarea></div>
+          <div class="mt-cell" style="display:flex; flex-direction:column; gap:5px; padding:5px">
+            ${isLocked ? 
+              `<img src="${e.signatureImg}" style="height:30px; filter:invert(1)">
+               <div style="font-size:8px; opacity:0.6">${new Date(e.signatureDate).toLocaleDateString()} (${e.user})</div>` :
+              `<div style="background:#fff; border-radius:4px; overflow:hidden">
+                <canvas id="sig-canvas-${i}" style="width:100%; height:60px; cursor:crosshair; touch-action:none"></canvas>
+                <div style="display:flex; border-top:1px solid #eee">
+                  <button class="tbtn" style="flex:1; height:20px; font-size:9px; background:#eee; color:#666" onclick="ui.clearSignature(${i})">X</button>
+                  <button class="tbtn" style="flex:2; height:20px; font-size:9px; background:var(--accent)" onclick="ui.saveSignature(${i})">Signer</button>
+                </div>
+              </div>
+              <script>setTimeout(() => ui.initSignature(${i}), 100);</script>`
+            }
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <button class="modal-btn" style="background:var(--bg3); margin-top:10px" onclick="ui.addRow()">＋ Ajouter une ligne (Clés, Consentement...)</button>
+    <div class="modal-field" style="margin-top:20px"><label>Observations Générales</label>
+      <textarea class="modal-input" id="obs" style="min-height:80px" placeholder="Notes globales..." oninput="ui.autoSave()">${d.obs||''}</textarea>
+    </div>`;
   }
 });
