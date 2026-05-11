@@ -1,22 +1,35 @@
 // FORMS
 Object.assign(ui, {
   fTension(d) {
-    if(!d.entries.length) d.entries=[{date:utils.today(),heure:'08:00',sys:'',dia:'',pouls:''}];
+    if(!d.entries.length) d.entries=[{date:utils.today(),heure:'08:00',sys:'',dia:'',pouls:'',user:state.currentUser}];
     return `<div class="measure-table">
-      <div class="mt-row mt-tension" style="background:var(--bg3); font-weight:bold; font-size:10px; color:var(--text3)">
-        <div class="mt-cell">Date</div><div class="mt-cell">Heure</div><div class="mt-cell">Sys</div><div class="mt-cell">Dia</div><div class="mt-cell">Pouls</div>
+      <div class="mt-row mt-tension" style="grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 0.8fr 1fr; background:var(--bg3); font-weight:bold; font-size:10px; color:var(--text3)">
+        <div class="mt-cell">Date</div><div class="mt-cell">Heure</div><div class="mt-cell">Sys</div><div class="mt-cell">Dia</div><div class="mt-cell">Pls</div><div class="mt-cell">ID</div>
       </div>
-      ${d.entries.map((e,i)=>`<div class="mt-row mt-tension"><div class="mt-cell"><input data-t="date" data-i="${i}" value="${e.date}" type="date" oninput="ui.autoSave()"></div><div class="mt-cell"><input data-t="heure" data-i="${i}" value="${e.heure}" type="time" oninput="ui.autoSave()"></div><div class="mt-cell"><input data-t="sys" data-i="${i}" value="${e.sys}" type="number" oninput="ui.autoSave()"></div><div class="mt-cell"><input data-t="dia" data-i="${i}" value="${e.dia}" type="number" oninput="ui.autoSave()"></div><div class="mt-cell"><input data-t="pouls" data-i="${i}" value="${e.pouls}" type="number" oninput="ui.autoSave()"></div></div>`).join('')}
+      ${d.entries.map((e,i)=>`<div class="mt-row mt-tension" style="grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 0.8fr 1fr">
+        <div class="mt-cell"><input data-t="date" data-i="${i}" value="${e.date}" type="date" oninput="ui.autoSave()"></div>
+        <div class="mt-cell"><input data-t="heure" data-i="${i}" value="${e.heure}" type="time" oninput="ui.autoSave()"></div>
+        <div class="mt-cell"><input data-t="sys" data-i="${i}" value="${e.sys}" type="number" oninput="ui.autoSave()"></div>
+        <div class="mt-cell"><input data-t="dia" data-i="${i}" value="${e.dia}" type="number" oninput="ui.autoSave()"></div>
+        <div class="mt-cell"><input data-t="pouls" data-i="${i}" value="${e.pouls}" type="number" oninput="ui.autoSave()"></div>
+        <div class="mt-cell" style="font-size:10px; color:var(--text2)">${e.user||state.currentUser}</div>
+      </div>`).join('')}
     </div><button class="modal-btn" style="background:var(--bg3)" onclick="ui.addRow()">＋ Ligne</button>`;
   },
 
   fGlycemie(d) {
-    if(!d.entries.length) d.entries=[{date:utils.today(),heure:'08:00',avant:'',apres:''}];
+    if(!d.entries.length) d.entries=[{date:utils.today(),heure:'08:00',avant:'',apres:'',user:state.currentUser}];
     return `<div class="measure-table">
-      <div class="mt-row mt-glyc" style="background:var(--bg3); font-weight:bold; font-size:10px; color:var(--text3)">
-        <div class="mt-cell">Date</div><div class="mt-cell">Heure</div><div class="mt-cell">Av. Repas</div><div class="mt-cell">Ap. Repas</div>
+      <div class="mt-row mt-glyc" style="grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 1fr; background:var(--bg3); font-weight:bold; font-size:10px; color:var(--text3)">
+        <div class="mt-cell">Date</div><div class="mt-cell">Heure</div><div class="mt-cell">Av.</div><div class="mt-cell">Ap.</div><div class="mt-cell">ID</div>
       </div>
-      ${d.entries.map((e,i)=>`<div class="mt-row mt-glyc"><div class="mt-cell"><input data-t="date" data-i="${i}" value="${e.date}" type="date" oninput="ui.autoSave()"></div><div class="mt-cell"><input data-t="heure" data-i="${i}" value="${e.heure}" type="time" oninput="ui.autoSave()"></div><div class="mt-cell"><input data-t="avant" data-i="${i}" value="${e.avant}" type="number" oninput="ui.autoSave()"></div><div class="mt-cell"><input data-t="apres" data-i="${i}" value="${e.apres}" type="number" oninput="ui.autoSave()"></div></div>`).join('')}
+      ${d.entries.map((e,i)=>`<div class="mt-row mt-glyc" style="grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 1fr">
+        <div class="mt-cell"><input data-t="date" data-i="${i}" value="${e.date}" type="date" oninput="ui.autoSave()"></div>
+        <div class="mt-cell"><input data-t="heure" data-i="${i}" value="${e.heure}" type="time" oninput="ui.autoSave()"></div>
+        <div class="mt-cell"><input data-t="avant" data-i="${i}" value="${e.avant}" type="number" oninput="ui.autoSave()"></div>
+        <div class="mt-cell"><input data-t="apres" data-i="${i}" value="${e.apres}" type="number" oninput="ui.autoSave()"></div>
+        <div class="mt-cell" style="font-size:10px; color:var(--text2)">${e.user||state.currentUser}</div>
+      </div>`).join('')}
     </div><button class="modal-btn" style="background:var(--bg3)" onclick="ui.addRow()">＋ Ligne</button>`;
   },
 

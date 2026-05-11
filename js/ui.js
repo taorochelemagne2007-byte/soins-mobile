@@ -238,8 +238,25 @@ const ui = {
   },
 
   vData() {
-    return `<div class="topbar"><button class="tbtn" onclick="ui.go('home')">←</button><div class="topbar-title">Réglages</div><div style="width:36px"></div></div>
-    <div class="content anim"><button class="modal-btn" onclick="auth.setPin()">🔑 Code PIN</button><button class="modal-btn" onclick="state.page='login';ui.render()" style="margin-top:10px;background:var(--bg3)">🔄 Profil (${state.currentUser})</button><button class="modal-btn" style="margin-top:40px;background:var(--red)" onclick="ui.reset()">⚠️ Reset complet</button></div>`;
+    return `<div class="topbar"><button class="tbtn" onclick="ui.go('home')">←</button><div class="topbar-title">Réglages & Données</div><div style="width:36px"></div></div>
+    <div class="content anim">
+      <div class="section-label">Sécurité</div>
+      <button class="modal-btn" onclick="auth.setPin()">🔑 Modifier le Code PIN</button>
+      <button class="modal-btn" onclick="state.page='login';ui.render()" style="margin-top:10px;background:var(--bg3)">🔄 Changer de Profil (${state.currentUser})</button>
+      
+      <div class="section-label">Sauvegarde Externe (Archives Journalières)</div>
+      <p style="font-size:11px; color:var(--text2); margin-bottom:10px">Liez un dossier sur votre appareil. L'app créera automatiquement un fichier par jour pour éviter toute perte.</p>
+      <button class="modal-btn" style="background:var(--accent2)" onclick="core.linkBackupFolder()">📁 Lier un dossier de sauvegarde</button>
+      <div id="file-status" style="font-size:10px; margin-top:5px; color:var(--accent2)"></div>
+
+      <div class="section-label">Transfert Manuel</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+        <button class="modal-btn" style="background:var(--bg3)" onclick="core.exportManual()">⬇️ Exporter (Backup)</button>
+        <button class="modal-btn" style="background:var(--bg3)" onclick="core.importManual()">⬆️ Importer (Restore)</button>
+      </div>
+
+      <button class="modal-btn" style="margin-top:40px;background:var(--red)" onclick="ui.reset()">⚠️ Reset complet (Effacer tout)</button>
+    </div>`;
   },
 
   exportPdf() {
