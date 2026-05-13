@@ -17,15 +17,5 @@ const utils = {
     } catch(e) { return '?? ans'; }
   },
   today: () => new Date().toISOString().split('T')[0],
-  now: () => new Date().toISOString().slice(0,16),
-  toIso: fr => { 
-    if(!fr) return utils.today(); 
-    const p=fr.split('/'); 
-    return p.length===3?`${p[2]}-${p[1]}-${p[0]}`:utils.today() 
-  },
-  toFr: iso => { 
-    if(!iso) return ''; 
-    const p=iso.split('-'); 
-    return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:iso 
-  }
+  now: () => new Date().toISOString().slice(0,16)
 };

@@ -75,20 +75,20 @@ Object.assign(ui, {
 
   fConsentement(d) {
     if(!d.entries) d.entries = [];
-    return `<div class="section-label">Tableau de Suivi & Consentement</div>
+    return `<div class="section-label">Cabinet de Soins - Suivi & Consentement</div>
     <div class="measure-table">
-      <div class="mt-row" style="grid-template-columns: 1fr 2fr 1.5fr; background:var(--bg3); font-weight:bold; font-size:10px">
-        <div class="mt-cell">Date</div><div class="mt-cell">Objet / Note</div><div class="mt-cell">Signature</div>
+      <div class="mt-row" style="grid-template-columns: 0.8fr 2.2fr 1.5fr; background:var(--bg3); font-weight:bold; font-size:10px">
+        <div class="mt-cell">Date</div><div class="mt-cell">Objet / Note</div><div class="mt-cell">Signature & Soignant</div>
       </div>
       ${d.entries.map((e,i) => {
         const isLocked = !!e.signatureDate;
-        return `<div class="mt-row" style="grid-template-columns: 1fr 2fr 1.5fr; min-height:60px; align-items:center">
-          <div class="mt-cell"><input data-t="date" data-i="${i}" value="${e.date}" type="date" ${isLocked?'disabled':''} oninput="ui.autoSave()"></div>
+        return `<div class="mt-row" style="grid-template-columns: 0.8fr 2.2fr 1.5fr; min-height:60px; align-items:center">
+          <div class="mt-cell"><input data-t="date" data-i="${i}" value="${e.date}" type="date" style="width:100%; font-size:10px; padding:2px" ${isLocked?'disabled':''} oninput="ui.autoSave()"></div>
           <div class="mt-cell"><textarea data-t="note" data-i="${i}" style="font-size:11px; width:100%; border:none; background:transparent; color:white; resize:none" placeholder="ex: Remise clés..." ${isLocked?'disabled':''} oninput="ui.autoSave()">${e.note||''}</textarea></div>
-          <div class="mt-cell" style="display:flex; flex-direction:column; gap:5px; padding:5px">
+          <div class="mt-cell" style="display:flex; flex-direction:column; gap:5px; padding:5px; text-align:center">
             ${isLocked ? 
-              `<img src="${e.signatureImg}" style="height:30px; filter:invert(1)">
-               <div style="font-size:8px; opacity:0.6">${new Date(e.signatureDate).toLocaleDateString()} (${e.user})</div>` :
+              `<img src="${e.signatureImg}" style="height:30px; filter:invert(1); margin:0 auto">
+               <div style="font-size:8px; opacity:0.6; line-height:1.2">Le ${new Date(e.signatureDate).toLocaleDateString()}<br>Par : <b>${e.user || 'Cabinet'}</b></div>` :
               `<div style="background:#fff; border-radius:4px; overflow:hidden">
                 <canvas id="sig-canvas-${i}" style="width:100%; height:60px; cursor:crosshair; touch-action:none"></canvas>
                 <div style="display:flex; border-top:1px solid #eee">

@@ -209,20 +209,62 @@ const ui = {
     const canvas = document.getElementById(rowIdx !== undefined ? 'sig-canvas-'+rowIdx : 'sig-canvas');
     if(!canvas) return;
     const ctx = canvas.getContext('2d');
-    ctx.strokeStyle = '#222'; ctx.lineWidth = 2;
+    
+    // Set fixed dimensions based on display size to avoid coordinate mismatch
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    
+    ctx.strokeStyle = '#222'; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     let drawing = false;
+
     const getPos = e => {
       const rect = canvas.getBoundingClientRect();
-      const clientX = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
-      const clientY = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
-      return { x: (clientX - rect.left) * (canvas.width / rect.width), y: (clientY - rect.top) * (canvas.height / rect.height) };
+      let clientX, clientY;
+      if (e.touches && e.touches[0]) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      return { 
+        x: (clientX - rect.left) * (canvas.width / rect.width), 
+        y: (clientY - rect.top) * (canvas.height / rect.height) 
+      };
     };
-    const start = e => { e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
-    const move = e => { e.preventDefault(); if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
-    const stop = () => drawing = false;
-    canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
-    canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', stop);
-    canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', move, {passive:false}); canvas.addEventListener('touchend', stop);
+
+    const start = e => { 
+      drawing = true; 
+      const p = getPos(e); 
+      ctx.beginPath(); 
+      ctx.moveTo(p.x, p.y); 
+      if (e.type === 'touchstart') e.preventDefault();
+    };
+
+    const move = e => { 
+      if(!drawing) return; 
+      const p = getPos(e); 
+      ctx.lineTo(p.x, p.y); 
+      ctx.stroke(); 
+      if (e.type === 'touchmove') e.preventDefault();
+    };
+
+    const stop = () => {
+      if (drawing) {
+        ctx.closePath();
+        drawing = false;
+        ui.autoSave();
+      }
+    };
+
+    // Events
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', stop);
+    
+    canvas.addEventListener('touchstart', start, {passive:false});
+    canvas.addEventListener('touchmove', move, {passive:false});
+    canvas.addEventListener('touchend', stop);
   },
 
   clearSignature(rowIdx) {
@@ -291,23 +333,30 @@ const ui = {
     div.style.background = 'white';
     div.style.color = 'black';
     
-    let reportContent = '';
     const contentEl = document.querySelector('.content').cloneNode(true);
     
-    // Cleanup unwanted elements for PDF
-    contentEl.querySelectorAll('button, input[type="file"], .doc-card, .section-label:contains("Suivi Photo"), .section-label:contains("Signature"), #sig-canvas, .measure-table:has([onclick*="photo"])').forEach(el => el.remove());
+    // Standard cleanup
+    contentEl.querySelectorAll('button, input[type="file"], .doc-card, #sig-canvas, canvas').forEach(el => el.remove());
     
-    // Specifically target the "Suivi Photo" table in Pansement
-    if(d.type === 'pansement') {
-      const labels = contentEl.querySelectorAll('.section-label');
-      labels.forEach(l => { if(l.textContent.includes('Suivi Photo')) {
+    // Remove sections by text content (Photo, Signature in Pansement/Consentement)
+    const sections = contentEl.querySelectorAll('.section-label');
+    sections.forEach(l => {
+      const txt = l.textContent.toLowerCase();
+      if(txt.includes('photo') || txt.includes('signature')) {
         let next = l.nextElementSibling;
         while(next && !next.classList.contains('section-label')) {
           let tmp = next; next = next.nextElementSibling; tmp.remove();
         }
         l.remove();
-      }});
-    }
+      }
+    });
+
+    // Remove any remaining photo tables (specifically for pansement)
+    contentEl.querySelectorAll('.measure-table').forEach(table => {
+      if(table.innerHTML.includes('Voir') || table.innerHTML.includes('photo')) {
+        table.remove();
+      }
+    });
 
     contentEl.querySelectorAll('input, textarea').forEach(i => {
       const span = document.createElement('div');

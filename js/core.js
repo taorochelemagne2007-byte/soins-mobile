@@ -204,7 +204,7 @@ const core = {
       await db.save('config', { key: 'dir_handle', value: handle });
       ui.toast('✓ Dossier lié avec succès');
       this.syncToExternalFolder();
-    } catch(e) { console.log('Lien dossier annule'); }
+    } catch(e) { /* Annulé par l'utilisateur */ }
   },
 
   async syncToExternalFolder() {
@@ -232,21 +232,18 @@ const core = {
             files.push(entry);
           }
         }
-        // Tri par nom (qui contient la date ISO YYYY-MM-DD)
         files.sort((a, b) => b.name.localeCompare(a.name));
-        // Supprime au-delà du 30ème fichier
         if (files.length > 30) {
           for (let i = 30; i < files.length; i++) {
             await state.dirHandle.removeEntry(files[i].name);
-            console.log('Ancienne archive supprimee:', files[i].name);
           }
         }
-      } catch(err) { console.error('Erreur nettoyage archives:', err); }
+      } catch(err) { /* Erreur nettoyage silencieuse */ }
 
       const st = document.getElementById('file-status');
       if(st) st.textContent = '✓ Archive du jour synchronisée à ' + new Date().toLocaleTimeString();
-      } catch(e) { console.error('Sync error:', e); }
-      },
+    } catch(e) { console.error('Sync error:', e); }
+  },
 
   exportManual() {
     const data = { version: 1, date: new Date().toISOString(), patients: state.patients };
